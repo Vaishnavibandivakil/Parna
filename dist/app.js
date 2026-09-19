@@ -46,7 +46,7 @@ if (photoArc) {
       const radians = degrees * Math.PI / 180;
       const x = photoArc.clientWidth / 2 + radius * Math.cos(radians);
       const y = centerY + radius * Math.sin(radians);
-      const tilt = (degrees - 270) * 0.13;
+      const tilt = degrees - 270;
       card.style.left = `${x}px`;
       card.style.top = `${y}px`;
       card.style.transform = `translate(-50%, -50%) rotate(${tilt}deg)`;
