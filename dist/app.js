@@ -23,7 +23,7 @@ if (photoArc) {
     ['190px', '220px'],
     ['180px', '210px'],
   ];
-  const cards = Array.from({ length: 14 }, (_, index) => originalCards[index % originalCards.length].cloneNode(true));
+  const cards = Array.from({ length: 10 }, (_, index) => originalCards[index % originalCards.length].cloneNode(true));
   cards.forEach((card, index) => {
     const [width, height] = cardProfiles[index % cardProfiles.length];
     card.className = 'carousel-card';
@@ -46,7 +46,7 @@ if (photoArc) {
       const radians = degrees * Math.PI / 180;
       const x = photoArc.clientWidth / 2 + radius * Math.cos(radians);
       const y = centerY + radius * Math.sin(radians);
-      const tilt = (degrees - 270) * 0.58;
+      const tilt = (degrees - 270) * 0.13;
       card.style.left = `${x}px`;
       card.style.top = `${y}px`;
       card.style.transform = `translate(-50%, -50%) rotate(${tilt}deg)`;
