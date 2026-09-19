@@ -8,8 +8,5 @@
 /* WebGL hero */
 .hero{isolation:isolate;background:radial-gradient(circle at 76% 42%,#d8961c 0,#8d5707 24%,#583600 56%,#312004 100%)}.hero-person{display:none}#hero-canvas{position:absolute;inset:0;z-index:0;pointer-events:none}#hero-canvas canvas{display:block;width:100%!important;height:100%!important}.hero-copy{z-index:1}.hero-copy::before{content:"";position:absolute;inset:-72px -110px -90px -70px;z-index:-1;background:radial-gradient(ellipse at 25% 45%,rgba(41,24,1,.48),transparent 63%);filter:blur(8px)}@media(max-width:800px){.hero{background:radial-gradient(circle at 68% 28%,#bd7d12 0,#714403 40%,#342105 100%)}.hero-copy::before{inset:-35px -20px -40px -25px}}
 
-/* Keep the carousel and dotted arc in one visible semicircle at every size. */
-.tick-arc{z-index:1;pointer-events:none}.photo-arc .carousel-card{z-index:2}.about-copy,.metrics{z-index:3}@media(max-width:800px){.tick-arc{display:block;left:50%;top:0}.tick{width:9px;height:2px}.about-copy{padding-top:360px}}
-
 /* About photo carousel */
 .photo-arc{width:100%;height:1000px;left:0;top:0;transform:none;overflow:visible;pointer-events:none}.photo-arc .carousel-card{position:absolute;left:0;top:0;width:var(--card-width);height:var(--card-height);margin:0;object-fit:cover;border-radius:28px;box-shadow:0 12px 24px rgba(28,25,23,.08);will-change:left,top,transform}.photo-arc .carousel-card:nth-child(7n + 4){border-radius:32px}@media(max-width:800px){.photo-arc{height:500px;top:0;transform:none}.photo-arc .carousel-card{width:calc(var(--card-width) * .52);height:calc(var(--card-height) * .52);border-radius:15px}.about-copy{padding-top:255px}}
