@@ -15,26 +15,43 @@ const photoArc = document.querySelector('.photo-arc');
 if (photoArc) {
   const originalCards = [...photoArc.querySelectorAll('.arc-image')];
   const cardProfiles = [
-    ['180px', '210px', '-54deg', '170px', '72px'],
-    ['190px', '220px', '-36deg', '45px', '22px'],
-    ['200px', '230px', '-18deg', '0px', '0px'],
-    ['206px', '240px', '0deg', '0px', '0px'],
-    ['200px', '230px', '18deg', '18px', '4px'],
-    ['190px', '220px', '36deg', '90px', '36px'],
-    ['180px', '210px', '54deg', '210px', '84px'],
+    ['180px', '210px'],
+    ['190px', '220px'],
+    ['200px', '230px'],
+    ['206px', '240px'],
+    ['200px', '230px'],
+    ['190px', '220px'],
+    ['180px', '210px'],
   ];
-  const track = document.createElement('div');
-  track.className = 'photo-track';
-  const cards = [...originalCards, ...originalCards.map(card => card.cloneNode(true))];
+  const cards = Array.from({ length: 14 }, (_, index) => originalCards[index % originalCards.length].cloneNode(true));
   cards.forEach((card, index) => {
-    const [width, height, tilt, rise, mobileRise] = cardProfiles[index % cardProfiles.length];
+    const [width, height] = cardProfiles[index % cardProfiles.length];
     card.className = 'carousel-card';
     card.style.setProperty('--card-width', width);
     card.style.setProperty('--card-height', height);
-    card.style.setProperty('--card-tilt', tilt);
-    card.style.setProperty('--card-rise', rise);
-    card.style.setProperty('--mobile-rise', mobileRise);
-    track.append(card);
+    photoArc.append(card);
   });
-  photoArc.replaceChildren(track);
+  originalCards.forEach(card => card.remove());
+
+  const duration = 34000;
+  const start = performance.now();
+  const positionCards = now => {
+    const compact = window.matchMedia('(max-width: 800px)').matches;
+    const radius = compact ? 320 : 910;
+    const centerY = compact ? 430 : 1080;
+    const progress = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : (now - start) / duration;
+    cards.forEach((card, index) => {
+      const phase = (index / cards.length + progress) % 1;
+      const degrees = 180 + phase * 180;
+      const radians = degrees * Math.PI / 180;
+      const x = photoArc.clientWidth / 2 + radius * Math.cos(radians);
+      const y = centerY + radius * Math.sin(radians);
+      const tilt = (degrees - 270) * 0.58;
+      card.style.left = `${x}px`;
+      card.style.top = `${y}px`;
+      card.style.transform = `translate(-50%, -50%) rotate(${tilt}deg)`;
+    });
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) requestAnimationFrame(positionCards);
+  };
+  positionCards(start);
 }
