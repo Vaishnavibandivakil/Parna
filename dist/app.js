@@ -37,8 +37,8 @@ if (photoArc) {
   const start = performance.now();
   const positionCards = now => {
     const compact = window.matchMedia('(max-width: 800px)').matches;
-    const radius = compact ? 320 : 910;
-    const centerY = compact ? 430 : 1080;
+    const radius = compact ? 320 : 945;
+    const centerY = compact ? 430 : 1161;
     const progress = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : (now - start) / duration;
     cards.forEach((card, index) => {
       const phase = (index / cards.length + progress) % 1;
