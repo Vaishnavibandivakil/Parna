@@ -139,7 +139,7 @@ function mountScene() {
   host.id = 'hero-canvas';
   host.setAttribute('aria-hidden', 'true');
   hero.prepend(host);
-  createRoot(host).render(<Silk color="#9c660e" speed={5} scale={1.1} noiseIntensity={1.5} rotation={0.05} lightMode />);
+  createRoot(host).render(<Silk color="#9c660e" speed={5} scale={1.1} noiseIntensity={1.5} rotation={0.05} />);
 }
 
 if (document.readyState === 'loading') {
