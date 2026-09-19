@@ -55,3 +55,9 @@ if (photoArc) {
   };
   positionCards(start);
 }
+
+const heroSceneScript = document.createElement('script');
+heroSceneScript.src = 'hero-scene.js';
+heroSceneScript.async = true;
+heroSceneScript.dataset.parnaHero = 'true';
+document.head.append(heroSceneScript);
