@@ -206,14 +206,13 @@ const setupStoryCardStack = () => {
   }
 
   const setY = cards.map(card => window.gsap.quickSetter(card, 'y', 'px'));
-  const setOpacity = cards.map(card => window.gsap.quickSetter(card, 'opacity'));
   let frameId = 0;
 
   cards.forEach((card, index) => window.gsap.set(card, { zIndex: index + 1 }));
   if (reduceMotion.matches) {
     window.gsap.set(cards[0], { y: 0, opacity: 1 });
-    window.gsap.set(cards[1], { y: 20, opacity: 1 });
-    window.gsap.set(cards[2], { y: 40, opacity: 1 });
+    window.gsap.set(cards[1], { y: 0, opacity: 1 });
+    window.gsap.set(cards[2], { y: 0, opacity: 1 });
     return;
   }
 
@@ -222,21 +221,19 @@ const setupStoryCardStack = () => {
     const scrollTop = window.scrollY;
     const viewportHeight = window.innerHeight;
     const deckTop = deck.getBoundingClientRect().top + scrollTop;
-    const stageStart = deckTop - viewportHeight * 0.12;
+    const stickyTop = Math.max(24, viewportHeight - stackPin.offsetHeight);
+    const stageStart = deckTop - stickyTop;
     const stageDistance = Math.max(1, deck.offsetHeight - stackPin.offsetHeight);
     const progress = Math.max(0, Math.min(1, (scrollTop - stageStart) / stageDistance));
     const cardHeight = stackPin.offsetHeight;
     const clamp = value => Math.max(0, Math.min(1, value));
-    const secondProgress = clamp((progress - 0.18) / 0.30);
-    const thirdProgress = clamp((progress - 0.58) / 0.30);
+    const secondProgress = clamp((progress - 0.03) / 0.40);
+    const thirdProgress = clamp((progress - 0.53) / 0.40);
     const rise = (start, end, amount) => start + (end - start) * amount;
 
     setY[0](0);
-    setOpacity[0](1);
-    setY[1](rise(cardHeight + 72, 20, secondProgress));
-    setOpacity[1](secondProgress);
-    setY[2](rise(cardHeight + 72, 40, thirdProgress));
-    setOpacity[2](thirdProgress);
+    setY[1](rise(cardHeight, 0, secondProgress));
+    setY[2](rise(cardHeight, 0, thirdProgress));
   };
 
   const requestUpdate = () => {
