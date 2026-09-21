@@ -214,14 +214,14 @@ const setupStoryCardStack = () => {
     return;
   }
 
-  const setY = cards.map(card => window.gsap.quickSetter(card, 'y', 'px'));
+  const setClipPath = cards.map(card => window.gsap.quickSetter(card, 'clipPath'));
   let frameId = 0;
 
   cards.forEach((card, index) => window.gsap.set(card, { zIndex: index + 1 }));
   if (reduceMotion.matches) {
-    window.gsap.set(cards[0], { y: 0, opacity: 1 });
-    window.gsap.set(cards[1], { y: 0, opacity: 1 });
-    window.gsap.set(cards[2], { y: 0, opacity: 1 });
+    window.gsap.set(cards[0], { clipPath: 'inset(0 0 0 0)' });
+    window.gsap.set(cards[1], { clipPath: 'inset(0 0 0 0)' });
+    window.gsap.set(cards[2], { clipPath: 'inset(0 0 0 0)' });
     return;
   }
 
@@ -234,15 +234,12 @@ const setupStoryCardStack = () => {
     const stageStart = deckTop - stickyTop;
     const stageDistance = Math.max(1, deck.offsetHeight - stackPin.offsetHeight);
     const progress = Math.max(0, Math.min(1, (scrollTop - stageStart) / stageDistance));
-    const cardHeight = stackPin.offsetHeight;
     const clamp = value => Math.max(0, Math.min(1, value));
     const secondProgress = clamp((progress - 0.01) / 0.42);
     const thirdProgress = clamp((progress - 0.51) / 0.42);
-    const rise = (start, end, amount) => start + (end - start) * amount;
-
-    setY[0](0);
-    setY[1](rise(cardHeight, 0, secondProgress));
-    setY[2](rise(cardHeight, 0, thirdProgress));
+    setClipPath[0]('inset(0 0 0 0)');
+    setClipPath[1](`inset(${100 - secondProgress * 100}% 0 0 0)`);
+    setClipPath[2](`inset(${100 - thirdProgress * 100}% 0 0 0)`);
   };
 
   const requestUpdate = () => {
