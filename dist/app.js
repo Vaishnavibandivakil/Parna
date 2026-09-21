@@ -61,3 +61,72 @@ heroSceneScript.src = 'hero-scene.js';
 heroSceneScript.async = true;
 heroSceneScript.dataset.parnaHero = 'true';
 document.head.append(heroSceneScript);
+
+const setupServiceHoverPreviews = () => {
+  const servicesSection = document.querySelector('.services');
+  const serviceList = servicesSection?.querySelector('.service-list');
+  if (!servicesSection || !serviceList || !window.gsap) return;
+
+  const serviceRows = [...serviceList.querySelectorAll('.service-row')];
+  const previewSources = ['c015c.png', '0c189.png', '506ba.png', 'd456c.png', 'ac63c.png', '79171.png'];
+  const previewStates = [
+    { x: -44, y: -12, rotation: -8 },
+    { x: 20, y: -4, rotation: 7 },
+    { x: -18, y: 8, rotation: -6 },
+    { x: 34, y: -10, rotation: 9 },
+    { x: -32, y: 12, rotation: -7 },
+    { x: 16, y: 5, rotation: 6 },
+  ];
+  const preview = document.createElement('div');
+  const previewImage = document.createElement('img');
+  const desktop = window.matchMedia('(min-width: 801px)');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let isVisible = false;
+
+  preview.className = 'service-hover-preview';
+  preview.setAttribute('aria-hidden', 'true');
+  previewImage.alt = '';
+  preview.append(previewImage);
+  servicesSection.append(preview);
+
+  const showPreview = index => {
+    if (!desktop.matches) return;
+    const state = previewStates[index];
+    previewImage.src = `assets/${previewSources[index]}`;
+    window.gsap.killTweensOf(preview);
+    const duration = reduceMotion.matches ? 0 : 0.42;
+
+    if (isVisible) {
+      window.gsap.to(preview, { autoAlpha: 1, x: state.x, y: state.y, rotation: state.rotation, scale: 1, duration, ease: 'power3.out', overwrite: 'auto' });
+    } else {
+      window.gsap.fromTo(preview, { autoAlpha: 0, x: state.x, y: state.y + 20, rotation: state.rotation - 3, scale: 0.88 }, { autoAlpha: 1, x: state.x, y: state.y, rotation: state.rotation, scale: 1, duration, ease: 'power3.out', overwrite: 'auto' });
+    }
+    isVisible = true;
+  };
+
+  const hidePreview = () => {
+    if (!isVisible) return;
+    isVisible = false;
+    window.gsap.killTweensOf(preview);
+    window.gsap.to(preview, { autoAlpha: 0, scale: 0.92, y: '+=14', duration: reduceMotion.matches ? 0 : 0.24, ease: 'power2.in', overwrite: 'auto' });
+  };
+
+  serviceRows.forEach((row, index) => {
+    row.tabIndex = 0;
+    row.addEventListener('pointerenter', () => showPreview(index));
+    row.addEventListener('focus', () => showPreview(index));
+  });
+  serviceList.addEventListener('pointerleave', hidePreview);
+  serviceList.addEventListener('focusout', () => requestAnimationFrame(() => {
+    if (!serviceList.contains(document.activeElement)) hidePreview();
+  }));
+  desktop.addEventListener('change', () => {
+    if (!desktop.matches) hidePreview();
+  });
+};
+
+const gsapScript = document.createElement('script');
+gsapScript.src = 'https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js';
+gsapScript.async = true;
+gsapScript.addEventListener('load', setupServiceHoverPreviews, { once: true });
+document.head.append(gsapScript);
