@@ -251,11 +251,79 @@ const setupStoryCardStack = () => {
   requestUpdate();
 };
 
+const setupTransformationComparison = () => {
+  const map = document.querySelector('.journey-map');
+  const handle = map?.querySelector('.map-center');
+  const leftSide = map?.querySelector('.map-left');
+  const rightSide = map?.querySelector('.map-right');
+  if (!map || !handle || !leftSide || !rightSide || !window.gsap || !window.Draggable) return;
+
+  const maxDrag = Math.max(1, map.clientWidth / 2 - 76);
+  const setLeftClip = window.gsap.quickSetter(leftSide, 'clipPath');
+  const setRightClip = window.gsap.quickSetter(rightSide, 'clipPath');
+  const setLeftOpacity = window.gsap.quickSetter(leftSide, 'opacity');
+  const setRightOpacity = window.gsap.quickSetter(rightSide, 'opacity');
+  const setLeftScale = window.gsap.quickSetter(leftSide, 'scale');
+  const setRightScale = window.gsap.quickSetter(rightSide, 'scale');
+
+  handle.tabIndex = 0;
+  handle.setAttribute('role', 'slider');
+  handle.setAttribute('aria-label', 'Compare your current and future wellbeing');
+  handle.setAttribute('aria-valuemin', '-100');
+  handle.setAttribute('aria-valuemax', '100');
+
+  const updateComparison = x => {
+    const progress = window.gsap.utils.clamp(0, 1, (x + maxDrag) / (maxDrag * 2));
+    const leftClip = Math.max(0, (progress - 0.5) * 150);
+    const rightClip = Math.max(0, (0.5 - progress) * 150);
+
+    setLeftClip(`inset(0 ${leftClip}% 0 0)`);
+    setRightClip(`inset(0 0 0 ${rightClip}%)`);
+    setLeftOpacity(1 - Math.max(0, progress - 0.5) * 1.2);
+    setRightOpacity(0.4 + Math.min(0.6, progress * 1.2));
+    setLeftScale(1.08 - progress * 0.16);
+    setRightScale(0.92 + progress * 0.16);
+    handle.setAttribute('aria-valuenow', String(Math.round((progress - 0.5) * 200)));
+  };
+
+  const draggable = window.Draggable.create(handle, {
+    type: 'x',
+    bounds: { minX: -maxDrag, maxX: maxDrag },
+    edgeResistance: 0.85,
+    onPress() { updateComparison(this.x); },
+    onDrag() { updateComparison(this.x); },
+  });
+
+  handle.addEventListener('keydown', event => {
+    const current = window.gsap.getProperty(handle, 'x');
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+      event.preventDefault();
+      const next = window.gsap.utils.clamp(-maxDrag, maxDrag, Number(current) + (event.key === 'ArrowLeft' ? -32 : 32));
+      window.gsap.to(handle, { x: next, duration: 0.18, ease: 'power2.out', onUpdate: () => updateComparison(Number(window.gsap.getProperty(handle, 'x'))) });
+    }
+  });
+
+  updateComparison(0);
+  return () => draggable.forEach(instance => instance.kill());
+};
+
 const gsapScript = document.createElement('script');
 gsapScript.src = 'https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js';
 gsapScript.async = true;
 gsapScript.addEventListener('load', () => {
-  setupServiceHoverPreviews();
-  setupStoryCardStack();
+  const initializeFeatures = () => {
+    setupServiceHoverPreviews();
+    setupStoryCardStack();
+    setupTransformationComparison();
+  };
+  const draggableScript = document.createElement('script');
+  draggableScript.src = 'https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/Draggable.min.js';
+  draggableScript.async = true;
+  draggableScript.addEventListener('load', () => {
+    window.gsap.registerPlugin(window.Draggable);
+    initializeFeatures();
+  }, { once: true });
+  draggableScript.addEventListener('error', initializeFeatures, { once: true });
+  document.head.append(draggableScript);
 }, { once: true });
 document.head.append(gsapScript);

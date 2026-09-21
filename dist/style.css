@@ -20,3 +20,4 @@
 /* Transformation glow */
 .transformation{background:radial-gradient(ellipse 430px 300px at 50% 52%,rgba(201,126,27,.72) 0%,rgba(137,76,9,.48) 42%,rgba(87,43,0,0) 76%),linear-gradient(180deg,#603000 0%,#522700 100%)}
 .transformation .where{font:italic 24px/1 'Instrument Serif',serif;color:#fff0e0}
+.transformation .map-side{will-change:clip-path,opacity,transform;transform-origin:center}.transformation .map-center{cursor:grab;touch-action:none;user-select:none}.transformation .map-center:active{cursor:grabbing}.transformation .map-center img{pointer-events:none}
