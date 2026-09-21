@@ -256,7 +256,7 @@ const setupTransformationComparison = () => {
   const handle = map?.querySelector('.map-center');
   const leftSide = map?.querySelector('.map-left');
   const rightSide = map?.querySelector('.map-right');
-  if (!map || !handle || !leftSide || !rightSide || !window.gsap || !window.Draggable) return;
+  if (!map || !handle || !leftSide || !rightSide || !window.gsap) return;
 
   const maxDrag = Math.max(1, map.clientWidth / 2 - 76);
   const setLeftClip = window.gsap.quickSetter(leftSide, 'clipPath');
@@ -286,13 +286,34 @@ const setupTransformationComparison = () => {
     handle.setAttribute('aria-valuenow', String(Math.round((progress - 0.5) * 200)));
   };
 
-  const draggable = window.Draggable.create(handle, {
-    type: 'x',
-    bounds: { minX: -maxDrag, maxX: maxDrag },
-    edgeResistance: 0.85,
-    onPress() { updateComparison(this.x); },
-    onDrag() { updateComparison(this.x); },
+  let isDragging = false;
+  let activePointerId = null;
+  const updateFromPointer = event => {
+    const bounds = map.getBoundingClientRect();
+    const x = window.gsap.utils.clamp(-maxDrag, maxDrag, event.clientX - (bounds.left + bounds.width / 2));
+    window.gsap.set(handle, { x });
+    updateComparison(x);
+  };
+  const endDrag = event => {
+    if (event.pointerId !== activePointerId) return;
+    isDragging = false;
+    activePointerId = null;
+    handle.classList.remove('is-dragging');
+  };
+
+  handle.addEventListener('pointerdown', event => {
+    event.preventDefault();
+    isDragging = true;
+    activePointerId = event.pointerId;
+    handle.setPointerCapture(event.pointerId);
+    handle.classList.add('is-dragging');
+    updateFromPointer(event);
   });
+  window.addEventListener('pointermove', event => {
+    if (isDragging && event.pointerId === activePointerId) updateFromPointer(event);
+  });
+  window.addEventListener('pointerup', endDrag);
+  window.addEventListener('pointercancel', endDrag);
 
   handle.addEventListener('keydown', event => {
     const current = window.gsap.getProperty(handle, 'x');
@@ -304,26 +325,14 @@ const setupTransformationComparison = () => {
   });
 
   updateComparison(0);
-  return () => draggable.forEach(instance => instance.kill());
 };
 
 const gsapScript = document.createElement('script');
 gsapScript.src = 'https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js';
 gsapScript.async = true;
 gsapScript.addEventListener('load', () => {
-  const initializeFeatures = () => {
-    setupServiceHoverPreviews();
-    setupStoryCardStack();
-    setupTransformationComparison();
-  };
-  const draggableScript = document.createElement('script');
-  draggableScript.src = 'https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/Draggable.min.js';
-  draggableScript.async = true;
-  draggableScript.addEventListener('load', () => {
-    window.gsap.registerPlugin(window.Draggable);
-    initializeFeatures();
-  }, { once: true });
-  draggableScript.addEventListener('error', initializeFeatures, { once: true });
-  document.head.append(draggableScript);
+  setupServiceHoverPreviews();
+  setupStoryCardStack();
+  setupTransformationComparison();
 }, { once: true });
 document.head.append(gsapScript);
