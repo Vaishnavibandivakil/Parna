@@ -196,56 +196,61 @@ const setupStoryCardStack = () => {
     detailsLink.href = `#${details.id}`;
   });
 
-  const finalStates = [
-    { y: 0, scale: 0.94, rotation: 0 },
-    { y: 20, scale: 0.97, rotation: -1.1 },
-    { y: 40, scale: 1, rotation: 1.1 },
-  ];
-  const setFinalState = () => cards.forEach((card, index) => window.gsap.set(card, { autoAlpha: 1, zIndex: index + 1, ...finalStates[index] }));
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const desktop = window.matchMedia('(min-width: 801px)');
-  if (reduceMotion.matches || !desktop.matches || !window.ScrollTrigger) {
-    setFinalState();
+  if (reduceMotion.matches || !desktop.matches) {
     return;
   }
 
-  window.gsap.set(cards[0], { autoAlpha: 1, zIndex: 1, y: 0, scale: 1, rotation: 0 });
-  window.gsap.set(cards[1], { autoAlpha: 0, zIndex: 2, y: deck.offsetHeight + 80, scale: 0.97, rotation: -4 });
-  window.gsap.set(cards[2], { autoAlpha: 0, zIndex: 3, y: deck.offsetHeight + 80, scale: 1, rotation: 4 });
+  const stackEnd = document.createElement('div');
+  const setY = cards.map(card => window.gsap.quickSetter(card, 'y', 'px'));
+  const setScale = cards.map(card => window.gsap.quickSetter(card, 'scale'));
+  const setRotation = cards.map(card => window.gsap.quickSetter(card, 'rotation', 'deg'));
+  let frameId = 0;
 
-  window.gsap.timeline({
-    defaults: { ease: 'none' },
-    scrollTrigger: {
-      trigger: deck,
-      start: 'top 12%',
-      end: '+=1400',
-      pin: true,
-      scrub: 0.6,
-      anticipatePin: 1,
-      invalidateOnRefresh: true,
-    },
-  })
-    .to(cards[0], { ...finalStates[0], duration: 1 }, 0.25)
-    .to(cards[1], { autoAlpha: 1, ...finalStates[1], duration: 1 }, 0.25)
-    .to(cards[2], { autoAlpha: 1, ...finalStates[2], duration: 1 }, 1.25);
+  stackEnd.className = 'story-stack-end';
+  deck.append(stackEnd);
+  cards.forEach((card, index) => window.gsap.set(card, { zIndex: index + 1 }));
+
+  const updateStack = () => {
+    frameId = 0;
+    const scrollTop = window.scrollY;
+    const viewportHeight = window.innerHeight;
+    const deckTop = deck.getBoundingClientRect().top + scrollTop;
+    const stackPosition = viewportHeight * 0.18;
+    const stackEndPosition = deckTop + stackEnd.offsetTop - viewportHeight * 0.28;
+
+    cards.forEach((card, index) => {
+      const cardTop = deckTop + card.offsetTop;
+      const stackOffset = index * 24;
+      const triggerStart = cardTop - stackPosition - stackOffset;
+      const scaleEnd = cardTop - viewportHeight * 0.08;
+      const scaleProgress = Math.max(0, Math.min(1, (scrollTop - triggerStart) / Math.max(1, scaleEnd - triggerStart)));
+      const targetScale = 0.94 + index * 0.03;
+      const isStacked = scrollTop >= triggerStart;
+      const pinnedUntil = Math.min(scrollTop, stackEndPosition);
+      const translateY = isStacked ? Math.max(0, pinnedUntil - cardTop + stackPosition + stackOffset) : 0;
+
+      setY[index](translateY);
+      setScale[index](1 - scaleProgress * (1 - targetScale));
+      setRotation[index](0);
+    });
+  };
+
+  const requestUpdate = () => {
+    if (!frameId) frameId = window.requestAnimationFrame(updateStack);
+  };
+
+  window.addEventListener('scroll', requestUpdate, { passive: true });
+  window.addEventListener('resize', requestUpdate, { passive: true });
+  requestUpdate();
 };
 
 const gsapScript = document.createElement('script');
 gsapScript.src = 'https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js';
 gsapScript.async = true;
 gsapScript.addEventListener('load', () => {
-  const scrollTriggerScript = document.createElement('script');
-  const initializeAnimations = () => {
-    setupServiceHoverPreviews();
-    setupStoryCardStack();
-  };
-  scrollTriggerScript.src = 'https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js';
-  scrollTriggerScript.async = true;
-  scrollTriggerScript.addEventListener('load', () => {
-    window.gsap.registerPlugin(window.ScrollTrigger);
-    initializeAnimations();
-  }, { once: true });
-  scrollTriggerScript.addEventListener('error', initializeAnimations, { once: true });
-  document.head.append(scrollTriggerScript);
+  setupServiceHoverPreviews();
+  setupStoryCardStack();
 }, { once: true });
 document.head.append(gsapScript);
