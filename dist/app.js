@@ -137,6 +137,15 @@ const setupStoryCardStack = () => {
   const firstCard = storiesSection?.querySelector('.story-card');
   if (!storiesSection || !firstCard || !window.gsap) return;
 
+  const storyBadge = storiesSection.querySelector(':scope > .badge');
+  const storyHeading = storiesSection.querySelector(':scope > h2');
+  if (storyBadge && storyHeading) {
+    const storyIntro = document.createElement('div');
+    storyIntro.className = 'stories-stack-heading';
+    storyBadge.before(storyIntro);
+    storyIntro.append(storyBadge, storyHeading);
+  }
+
   const stories = [
     {
       image: '57a23.png',
@@ -227,8 +236,8 @@ const setupStoryCardStack = () => {
     const progress = Math.max(0, Math.min(1, (scrollTop - stageStart) / stageDistance));
     const cardHeight = stackPin.offsetHeight;
     const clamp = value => Math.max(0, Math.min(1, value));
-    const secondProgress = clamp((progress - 0.03) / 0.40);
-    const thirdProgress = clamp((progress - 0.53) / 0.40);
+    const secondProgress = clamp((progress - 0.01) / 0.42);
+    const thirdProgress = clamp((progress - 0.51) / 0.42);
     const rise = (start, end, amount) => start + (end - start) * amount;
 
     setY[0](0);
