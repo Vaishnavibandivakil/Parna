@@ -132,8 +132,108 @@ const setupServiceHoverPreviews = () => {
   });
 };
 
+const setupStoryCardStack = () => {
+  const storiesSection = document.querySelector('.stories');
+  const firstCard = storiesSection?.querySelector('.story-card');
+  if (!storiesSection || !firstCard || !window.gsap) return;
+
+  const stories = [
+    {
+      image: '57a23.png',
+      label: 'STRESS RECOVERY',
+      title: 'A Journey from stress to serenity',
+      description: 'After months of feeling overwhelmed by work and daily responsibilities, Saqib Mahmud embraced a personalized recovery plan that helped him develop healthier routines, enjoy better sleep, and reconnect with his emotional well-being.',
+      quote: '“The support, peaceful environment, and personalized guidance gave me the confidence to prioritize my well-being again.”',
+      name: 'Saqib Mahmud',
+    },
+    {
+      image: 'c015c.png',
+      label: 'MINDFULNESS',
+      title: 'A return to a calmer rhythm',
+      description: 'With gentle practices and regular support, Maya rebuilt a daily rhythm that made space for quiet focus, steadier energy, and meaningful moments of rest.',
+      quote: '“I learned how to slow down, listen to myself, and make calm part of every day.”',
+      name: 'Maya L.',
+    },
+    {
+      image: 'd456c.png',
+      label: 'PERSONAL GROWTH',
+      title: 'Finding confidence in every step',
+      description: 'A focused plan helped Nina turn uncertainty into forward movement, with practical tools that supported confidence at home, work, and beyond.',
+      quote: '“The small changes added up. I feel more grounded and confident in my choices.”',
+      name: 'Nina R.',
+    },
+  ];
+  const deck = document.createElement('div');
+  const cards = [firstCard];
+
+  deck.className = 'story-deck';
+  firstCard.before(deck);
+  deck.append(firstCard);
+  stories.slice(1).forEach(() => {
+    const clone = firstCard.cloneNode(true);
+    deck.append(clone);
+    cards.push(clone);
+  });
+
+  cards.forEach((card, index) => {
+    const story = stories[index];
+    const image = card.querySelector('.story-photo > img');
+    const badge = card.querySelector('.story-copy > .badge');
+    const title = card.querySelector('.story-copy h3');
+    const description = card.querySelector('.story-copy > p');
+    const quote = card.querySelector('.quote blockquote');
+    const name = card.querySelector('.quote strong');
+    const details = card.querySelector('.benefits');
+    const detailsLink = card.querySelector('.story-copy .pill');
+
+    image.src = `assets/${story.image}`;
+    badge.textContent = story.label;
+    title.textContent = story.title;
+    description.textContent = story.description;
+    quote.textContent = story.quote;
+    name.textContent = story.name;
+    details.id = `story-benefits-${index + 1}`;
+    detailsLink.href = `#${details.id}`;
+  });
+
+  const finalStates = [
+    { y: 0, scale: 1, rotation: 0 },
+    { y: 20, scale: 0.985, rotation: -1.1 },
+    { y: 40, scale: 0.97, rotation: 1.1 },
+  ];
+  const setFinalState = () => cards.forEach((card, index) => window.gsap.set(card, { autoAlpha: 1, ...finalStates[index] }));
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (reduceMotion.matches) {
+    setFinalState();
+    return;
+  }
+
+  window.gsap.set(cards, { autoAlpha: 0 });
+  const revealStack = () => {
+    const timeline = window.gsap.timeline({ defaults: { duration: 0.58, ease: 'power3.out' } });
+    [2, 1, 0].forEach((index, sequence) => {
+      const state = finalStates[index];
+      timeline.fromTo(cards[index], { autoAlpha: 0, y: state.y + 90, scale: state.scale - 0.06, rotation: state.rotation * 3 }, { autoAlpha: 1, ...state, overwrite: 'auto' }, sequence === 0 ? 0 : '-=0.28');
+    });
+  };
+
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      revealStack();
+      observer.disconnect();
+    }, { threshold: 0.2 });
+    observer.observe(deck);
+  } else {
+    revealStack();
+  }
+};
+
 const gsapScript = document.createElement('script');
 gsapScript.src = 'https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js';
 gsapScript.async = true;
-gsapScript.addEventListener('load', setupServiceHoverPreviews, { once: true });
+gsapScript.addEventListener('load', () => {
+  setupServiceHoverPreviews();
+  setupStoryCardStack();
+}, { once: true });
 document.head.append(gsapScript);
