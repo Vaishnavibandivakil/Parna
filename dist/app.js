@@ -197,43 +197,55 @@ const setupStoryCardStack = () => {
   });
 
   const finalStates = [
-    { y: 0, scale: 1, rotation: 0 },
-    { y: 20, scale: 0.985, rotation: -1.1 },
-    { y: 40, scale: 0.97, rotation: 1.1 },
+    { y: 0, scale: 0.94, rotation: 0 },
+    { y: 20, scale: 0.97, rotation: -1.1 },
+    { y: 40, scale: 1, rotation: 1.1 },
   ];
-  const setFinalState = () => cards.forEach((card, index) => window.gsap.set(card, { autoAlpha: 1, ...finalStates[index] }));
+  const setFinalState = () => cards.forEach((card, index) => window.gsap.set(card, { autoAlpha: 1, zIndex: index + 1, ...finalStates[index] }));
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  if (reduceMotion.matches) {
+  const desktop = window.matchMedia('(min-width: 801px)');
+  if (reduceMotion.matches || !desktop.matches || !window.ScrollTrigger) {
     setFinalState();
     return;
   }
 
-  window.gsap.set(cards, { autoAlpha: 0 });
-  const revealStack = () => {
-    const timeline = window.gsap.timeline({ defaults: { duration: 0.58, ease: 'power3.out' } });
-    [2, 1, 0].forEach((index, sequence) => {
-      const state = finalStates[index];
-      timeline.fromTo(cards[index], { autoAlpha: 0, y: state.y + 90, scale: state.scale - 0.06, rotation: state.rotation * 3 }, { autoAlpha: 1, ...state, overwrite: 'auto' }, sequence === 0 ? 0 : '-=0.28');
-    });
-  };
+  window.gsap.set(cards[0], { autoAlpha: 1, zIndex: 1, y: 0, scale: 1, rotation: 0 });
+  window.gsap.set(cards[1], { autoAlpha: 0, zIndex: 2, y: deck.offsetHeight + 80, scale: 0.97, rotation: -4 });
+  window.gsap.set(cards[2], { autoAlpha: 0, zIndex: 3, y: deck.offsetHeight + 80, scale: 1, rotation: 4 });
 
-  if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) return;
-      revealStack();
-      observer.disconnect();
-    }, { threshold: 0.2 });
-    observer.observe(deck);
-  } else {
-    revealStack();
-  }
+  window.gsap.timeline({
+    defaults: { ease: 'none' },
+    scrollTrigger: {
+      trigger: deck,
+      start: 'top 12%',
+      end: '+=1400',
+      pin: true,
+      scrub: 0.6,
+      anticipatePin: 1,
+      invalidateOnRefresh: true,
+    },
+  })
+    .to(cards[0], { ...finalStates[0], duration: 1 }, 0.25)
+    .to(cards[1], { autoAlpha: 1, ...finalStates[1], duration: 1 }, 0.25)
+    .to(cards[2], { autoAlpha: 1, ...finalStates[2], duration: 1 }, 1.25);
 };
 
 const gsapScript = document.createElement('script');
 gsapScript.src = 'https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js';
 gsapScript.async = true;
 gsapScript.addEventListener('load', () => {
-  setupServiceHoverPreviews();
-  setupStoryCardStack();
+  const scrollTriggerScript = document.createElement('script');
+  const initializeAnimations = () => {
+    setupServiceHoverPreviews();
+    setupStoryCardStack();
+  };
+  scrollTriggerScript.src = 'https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js';
+  scrollTriggerScript.async = true;
+  scrollTriggerScript.addEventListener('load', () => {
+    window.gsap.registerPlugin(window.ScrollTrigger);
+    initializeAnimations();
+  }, { once: true });
+  scrollTriggerScript.addEventListener('error', initializeAnimations, { once: true });
+  document.head.append(scrollTriggerScript);
 }, { once: true });
 document.head.append(gsapScript);
