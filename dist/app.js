@@ -91,7 +91,14 @@ const setupServiceHoverPreviews = () => {
 
   const showPreview = index => {
     if (!desktop.matches) return;
-    const state = previewStates[index];
+    const rowRect = serviceRows[index].getBoundingClientRect();
+    const sectionRect = servicesSection.getBoundingClientRect();
+    const style = previewStates[index];
+    const state = {
+      x: rowRect.left - sectionRect.left + rowRect.width * 0.53 + style.x,
+      y: rowRect.top - sectionRect.top + rowRect.height / 2 - preview.offsetHeight / 2 + style.y,
+      rotation: style.rotation,
+    };
     previewImage.src = `assets/${previewSources[index]}`;
     window.gsap.killTweensOf(preview);
     const duration = reduceMotion.matches ? 0 : 0.42;
