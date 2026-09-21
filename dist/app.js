@@ -164,14 +164,17 @@ const setupStoryCardStack = () => {
     },
   ];
   const deck = document.createElement('div');
+  const stackPin = document.createElement('div');
   const cards = [firstCard];
 
   deck.className = 'story-deck';
+  stackPin.className = 'story-stack-pin';
   firstCard.before(deck);
-  deck.append(firstCard);
+  deck.append(stackPin);
+  stackPin.append(firstCard);
   stories.slice(1).forEach(() => {
     const clone = firstCard.cloneNode(true);
-    deck.append(clone);
+    stackPin.append(clone);
     cards.push(clone);
   });
 
@@ -198,43 +201,42 @@ const setupStoryCardStack = () => {
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const desktop = window.matchMedia('(min-width: 801px)');
-  if (reduceMotion.matches || !desktop.matches) {
+  if (!desktop.matches) {
     return;
   }
 
-  const stackEnd = document.createElement('div');
   const setY = cards.map(card => window.gsap.quickSetter(card, 'y', 'px'));
-  const setScale = cards.map(card => window.gsap.quickSetter(card, 'scale'));
-  const setRotation = cards.map(card => window.gsap.quickSetter(card, 'rotation', 'deg'));
+  const setOpacity = cards.map(card => window.gsap.quickSetter(card, 'opacity'));
   let frameId = 0;
 
-  stackEnd.className = 'story-stack-end';
-  deck.append(stackEnd);
   cards.forEach((card, index) => window.gsap.set(card, { zIndex: index + 1 }));
+  if (reduceMotion.matches) {
+    window.gsap.set(cards[0], { y: 0, opacity: 1 });
+    window.gsap.set(cards[1], { y: 20, opacity: 1 });
+    window.gsap.set(cards[2], { y: 40, opacity: 1 });
+    return;
+  }
 
   const updateStack = () => {
     frameId = 0;
     const scrollTop = window.scrollY;
     const viewportHeight = window.innerHeight;
     const deckTop = deck.getBoundingClientRect().top + scrollTop;
-    const stackPosition = viewportHeight * 0.18;
-    const stackEndPosition = deckTop + stackEnd.offsetTop - viewportHeight * 0.28;
+    const stageStart = deckTop - viewportHeight * 0.12;
+    const stageDistance = Math.max(1, deck.offsetHeight - stackPin.offsetHeight);
+    const progress = Math.max(0, Math.min(1, (scrollTop - stageStart) / stageDistance));
+    const cardHeight = stackPin.offsetHeight;
+    const clamp = value => Math.max(0, Math.min(1, value));
+    const secondProgress = clamp((progress - 0.18) / 0.30);
+    const thirdProgress = clamp((progress - 0.58) / 0.30);
+    const rise = (start, end, amount) => start + (end - start) * amount;
 
-    cards.forEach((card, index) => {
-      const cardTop = deckTop + card.offsetTop;
-      const stackOffset = index * 24;
-      const triggerStart = cardTop - stackPosition - stackOffset;
-      const scaleEnd = cardTop - viewportHeight * 0.08;
-      const scaleProgress = Math.max(0, Math.min(1, (scrollTop - triggerStart) / Math.max(1, scaleEnd - triggerStart)));
-      const targetScale = 0.94 + index * 0.03;
-      const isStacked = scrollTop >= triggerStart;
-      const pinnedUntil = Math.min(scrollTop, stackEndPosition);
-      const translateY = isStacked ? Math.max(0, pinnedUntil - cardTop + stackPosition + stackOffset) : 0;
-
-      setY[index](translateY);
-      setScale[index](1 - scaleProgress * (1 - targetScale));
-      setRotation[index](0);
-    });
+    setY[0](0);
+    setOpacity[0](1);
+    setY[1](rise(cardHeight + 72, 20, secondProgress));
+    setOpacity[1](secondProgress);
+    setY[2](rise(cardHeight + 72, 40, thirdProgress));
+    setOpacity[2](thirdProgress);
   };
 
   const requestUpdate = () => {
