@@ -20,7 +20,7 @@ const Plane = forwardRef<Mesh, { uniforms: Uniforms }>(function Plane({ uniforms
 
 export function HeroScene() {
   const mesh = useRef<Mesh>(null);
-  const uniforms = useMemo<Uniforms>(() => ({ uTime: { value: 0 }, uColor: { value: new Color(...toRgb('#9c660e')) }, uSpeed: { value: 5 }, uScale: { value: 1.1 }, uRotation: { value: .05 }, uNoiseIntensity: { value: 1.5 } }), []);
+  const uniforms = useMemo<Uniforms>(() => ({ uTime: { value: 0 }, uColor: { value: new Color(...toRgb('#e0b25a')) }, uSpeed: { value: 5 }, uScale: { value: 1.1 }, uRotation: { value: .05 }, uNoiseIntensity: { value: 1.5 } }), []);
   useEffect(() => undefined, []);
   return <div id="hero-canvas" aria-hidden="true"><Canvas dpr={[1, 2]} gl={{ alpha: false, antialias: true }}><Plane ref={mesh} uniforms={uniforms} /></Canvas></div>;
 }

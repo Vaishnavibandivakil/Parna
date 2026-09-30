@@ -1,26 +1,69 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { asset } from '../assets';
 import { HeroScene } from './HeroScene';
+import { ProgramDialog } from './ProgramDialog';
+import { feelingToProgram, programs } from '../data/programs';
+import { smoothScroll } from '../animations/smoothScroll';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export function Hero() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [selected, setSelected] = useState<number[]>([]);
+  const [selected, setSelected] = useState<number | null>(null);
+  const [choicesOpen, setChoicesOpen] = useState(false);
+  const [dialog, setDialog] = useState<{ open: boolean; index: number }>({ open: false, index: 0 });
+  const choices = useRef<HTMLDivElement>(null);
   const feelings = ['Constant Stress', 'Trouble Sleeping', 'Self Doubt', 'Emotional Burnout', 'Feeling Overwhelmed'];
-  const toggleFeeling = (index: number) => setSelected(current => current.includes(index) ? current.filter(value => value !== index) : [...current, index]);
+
+  // The choices stay folded under the question until the visitor scrolls a little
+  // (or taps the question). Picking one opens the matching program's details.
+  useEffect(() => {
+    let scrollTimer = 0;
+    const idleTimer = window.setTimeout(() => setChoicesOpen(true), 2500);
+    const trigger = ScrollTrigger.create({
+      start: 40,
+      once: true,
+      onEnter: () => { scrollTimer = window.setTimeout(() => setChoicesOpen(true), 600); },
+    });
+    return () => { window.clearTimeout(idleTimer); window.clearTimeout(scrollTimer); trigger.kill(); };
+  }, []);
+  useEffect(() => {
+    const el = choices.current;
+    if (!el) return;
+    gsap.to(el, { height: choicesOpen ? 'auto' : 0, duration: 0.7, ease: 'power3.inOut' });
+    gsap.to(el.querySelectorAll('button'), { autoAlpha: choicesOpen ? 1 : 0, y: choicesOpen ? 0 : 8, duration: 0.45, stagger: choicesOpen ? 0.05 : 0, delay: choicesOpen ? 0.2 : 0, ease: 'power2.out' });
+  }, [choicesOpen]);
+  const startJourney = (event: React.MouseEvent) => {
+    event.preventDefault();
+    setChoicesOpen(true);
+    smoothScroll.to('#assessment', -160);
+  };
+  const pickFeeling = (index: number) => {
+    setSelected(index);
+    setDialog({ open: true, index: feelingToProgram[feelings[index]] ?? 0 });
+  };
   return <section className="hero" id="home">
-    <HeroScene />
-    <header>
+    <img className="hero-bg" src={asset('hero-bg.png')} alt="" />
+    <div className="hero-panel">
+      <HeroScene />
       <a className="brand" href="#home">Parna</a>
-      <button className="menu-toggle" aria-label={menuOpen ? 'Close navigation' : 'Open navigation'} aria-expanded={menuOpen} aria-controls="navigation" onClick={() => setMenuOpen(value => !value)}><img src={asset('d25b6.svg')} alt="" /></button>
-      <nav id="navigation" hidden={!menuOpen}>
-        {['About Parna', 'Our Method', 'Support', 'Client Journey', 'Newsletter'].map((label, index) => <a key={label} href={['#about', '#how', '#services', '#stories', '#newsletter'][index]} onClick={() => setMenuOpen(false)}>{label}</a>)}
-      </nav>
-    </header>
-    <div className="hero-copy">
-      <h1>TRANSFORM YOUR <em>Life</em><br />INTO A WILDLY <em>Abundant</em> JOURNEY</h1>
-      <p>Empowering designers, illustrators, and artists to craft sustainable, purpose-driven businesses that bring freedom</p>
-      <a className="hero-cta" href="#how">START YOUR JOURNEY →</a>
-      <div className="feelings" id="assessment"><h2>How are you feeling today?</h2><div className="feeling-list">{feelings.map((feeling, index) => <button key={feeling} aria-pressed={selected.includes(index)} onClick={() => toggleFeeling(index)}>+ &nbsp; {feeling}</button>)}</div></div>
+      <div className="hero-copy">
+        <p className="hero-eyebrow">Hi, I'm Parna.</p>
+        <h1>A certified <em>life coach</em><br />and <em>healer</em>.</h1>
+        <p>I help people to stop resisting life and find ways to flow with it.</p>
+        <a className="hero-cta" href="#assessment" onClick={startJourney}>START YOUR JOURNEY<span aria-hidden>→</span></a>
+        <div className="feelings" id="assessment">
+          <button type="button" className="feelings-question" aria-expanded={choicesOpen} aria-controls="feeling-choices" onClick={() => setChoicesOpen(value => !value)}>
+            <h2>How are you feeling today?</h2>
+            <span className="feelings-toggle" aria-hidden>+</span>
+          </button>
+          <div className="feeling-choices" id="feeling-choices" ref={choices}>
+            <div className="feeling-list">{feelings.map((feeling, index) => <button key={feeling} type="button" aria-pressed={selected === index} onClick={() => pickFeeling(index)}>+ &nbsp; {feeling}</button>)}</div>
+          </div>
+        </div>
+      </div>
     </div>
+    <ProgramDialog open={dialog.open} index={dialog.index} programs={programs} onClose={() => setDialog(current => ({ ...current, open: false }))} />
   </section>;
 }

@@ -1,4 +1,20 @@
 import { FormEvent, useState } from 'react';
 import { asset } from '../assets';
-const sections = [{ title: 'Platform', links: ['Our Method', 'Support Team', 'Self-Assessment'] }, { title: 'Resources', links: ['Our Method', 'Support Team', 'Self-Assessment', 'Privacy Policy'] }, { title: 'Legal', links: ['Our Method', 'Support Team', 'Self-Assessment', 'Privacy Policy'] }];
-export function Footer() { const [message, setMessage] = useState(''); const [notice, setNotice] = useState<string | null>(null); const subscribe = (event: FormEvent) => { event.preventDefault(); setMessage('Newsletter sign-up is not available yet. Please check back soon.'); }; return <><footer id="newsletter"><div className="newsletter"><h2>Join our newsletter to get insights and updates</h2><form onSubmit={subscribe}><label className="sr-only" htmlFor="email">Email address</label><input id="email" type="email" placeholder="Enter your email..." required /><button type="submit">Subscribe Now<span><img src={asset('f78ef.svg')} alt="" /></span></button></form><p className="form-status" role="status">{message}</p></div><div className="footer-grid"><div className="footer-brand"><a href="#home"><img src={asset('38eff.svg')} alt="" /> parna</a><p>Providing licensed online therapy and mental health support tailored directly to your life. Expertly matching you with the support you deserve.</p></div>{sections.map(section => <div key={section.title}><h3>{section.title}</h3>{section.links.map(link => <button className="legal" key={link} onClick={() => setNotice(link)}>{link}</button>)}</div>)}</div><div className="copyright"><span>© 2026 parna. All rights reserved.</span><div><button className="legal" onClick={() => setNotice('Privacy Policy')}>Privacy Policy</button><button className="legal" onClick={() => setNotice('Terms of Service')}>Terms of Service</button></div></div></footer>{notice && <dialog open onClick={event => { if (event.target === event.currentTarget) setNotice(null); }}><button className="dialog-close" aria-label="Close dialog" onClick={() => setNotice(null)}>×</button><h2>{notice}</h2><p>This information has not been provided yet. Please check back before using Parna’s services.</p></dialog>}</>; }
+
+const social = [
+  { label: 'Instagram', href: 'https://instagram.com/' },
+  { label: 'LinkedIn', href: 'https://linkedin.com/' },
+];
+
+export function Footer() {
+  const [message, setMessage] = useState('');
+  const subscribe = (event: FormEvent) => { event.preventDefault(); setMessage('Thank you. Parna will be in touch within a working day to arrange a time.'); };
+  return <footer id="newsletter">
+    <div className="newsletter"><h2>Ready to begin? Book a session with Parna</h2><form onSubmit={subscribe}><label className="sr-only" htmlFor="email">Email address</label><input id="email" type="email" placeholder="Enter your email..." required /><button type="submit">Book a session<span><img src={asset('f78ef.svg')} alt="" /></span></button></form><p className="form-status" role="status">{message}</p></div>
+    <div className="footer-grid footer-simple">
+      <div className="footer-brand"><a href="#home"><img src={asset('38eff.svg')} alt="" /> Parna Presence</a><p>Sessions online in English, Hindi and Bengali</p></div>
+      <div className="footer-social">{social.map((item, index) => [index > 0 && <i key={`sep-${item.label}`} aria-hidden>·</i>, <a key={item.label} href={item.href} target="_blank" rel="noreferrer">{item.label}</a>])}</div>
+    </div>
+    <div className="copyright"><span>© 2026 Parna Presence. All rights reserved.</span></div>
+  </footer>;
+}
