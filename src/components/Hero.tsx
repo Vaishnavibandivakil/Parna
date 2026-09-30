@@ -51,7 +51,7 @@ export function Hero() {
       <div className="hero-copy">
         <p className="hero-eyebrow">Hi, I'm Parna.</p>
         <h1>A certified <em>life coach</em><br />and <em>healer</em>.</h1>
-        <p>I help people to stop resisting life and find ways to flow with it.</p>
+        <p>I help people stop resisting life and move through it with more ease.</p>
         <a className="hero-cta" href="#assessment" onClick={startJourney}>START YOUR JOURNEY<span aria-hidden>→</span></a>
         <div className="feelings" id="assessment">
           <button type="button" className="feelings-question" aria-expanded={choicesOpen} aria-controls="feeling-choices" onClick={() => setChoicesOpen(value => !value)}>
