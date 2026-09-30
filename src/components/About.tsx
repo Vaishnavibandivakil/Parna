@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { asset } from '../assets';
 
-const photos = ['29263.png', 'ac63c.png', '0c189.png', '2da04.png', 'fe1a2.png', 'cf382.png', 'd1439.png'];
+const photos = ['about-1.webp', 'about-2.webp', 'about-3.png', 'about-4.webp', 'about-5.webp'];
 const ticks = Array.from({ length: 100 });
 
 type ArcMode = 'compact' | 'tablet' | 'normal' | 'wide';
