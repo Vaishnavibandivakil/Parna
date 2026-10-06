@@ -55,17 +55,14 @@ function Clip({ clip }: { clip: typeof clips[number] }) {
   return (
     <video
       className="program-video"
-      autoPlay
       muted
       loop
       playsInline
-      preload="metadata"
+      preload="none"
       poster={asset(clip.poster)}
+      data-src={`/assets/videos/${clip.src}.mp4`}
       aria-label={clip.label}
-    >
-      <source src={`/assets/videos/${clip.src}.webm`} type="video/webm" />
-      <source src={`/assets/videos/${clip.src}.mp4`} type="video/mp4" />
-    </video>
+    />
   );
 }
 
@@ -100,12 +97,15 @@ export function Programs() {
     const el = grid.current;
     if (!el) return;
 
-    // Only let clips play while they are on screen.
+    // Attaching a source only when visible prevents offscreen clips from downloading.
     const videos = Array.from(el.querySelectorAll<HTMLVideoElement>('video'));
     const io = new IntersectionObserver(
       (entries) => entries.forEach(({ target, isIntersecting }) => {
         const video = target as HTMLVideoElement;
-        if (isIntersecting) video.play().catch(() => {});
+        if (isIntersecting) {
+          if (!video.src && video.dataset.src) video.src = video.dataset.src;
+          video.play().catch(() => {});
+        }
         else video.pause();
       }),
       { threshold: 0.15 },

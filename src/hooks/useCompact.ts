@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 
 /** True on phones and tablets (up to 1024px), kept in sync with resizes. */
 export function useCompact(query = '(max-width: 1024px)') {
-  const [compact, setCompact] = useState(() => typeof window !== 'undefined' && window.matchMedia(query).matches);
+  // Match the build-time HTML on the first client render, then apply the viewport mode.
+  const [compact, setCompact] = useState(false);
   useEffect(() => {
     const mq = window.matchMedia(query);
     const onChange = () => setCompact(mq.matches);

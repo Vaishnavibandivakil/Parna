@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { asset } from '../assets';
 
-const photos = ['about-1.webp', 'about-2.webp', 'about-3.png', 'about-4.webp', 'about-5.webp'];
+const photos = ['about-1-480.webp', 'about-2-480.webp', 'about-3-480.webp', 'about-4-480.webp', 'about-5-480.webp'];
 const ticks = Array.from({ length: 100 });
 
 type ArcMode = 'compact' | 'tablet' | 'normal' | 'wide';
@@ -21,24 +21,29 @@ const modeFor = () => (window.matchMedia('(max-width: 800px)').matches ? 'compac
 function ArcGallery() {
   const container = useRef<HTMLDivElement>(null);
   const cards = useRef<(HTMLImageElement | null)[]>([]);
-  const [mode, setMode] = useState<ArcMode>(() => (typeof window === 'undefined' ? 'normal' : modeFor()));
+  const [mode, setMode] = useState<ArcMode>('normal');
   const modeRef = useRef(mode);
   modeRef.current = mode;
 
   useEffect(() => {
     const onResize = () => setMode(modeFor());
     window.addEventListener('resize', onResize);
+    onResize();
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
   useEffect(() => {
     let frame = 0;
+    let visible = false;
     const started = performance.now();
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const position = (now: number) => {
+      frame = 0;
       const target = container.current;
       if (!target) return;
       const { radius, centerY, cardScale, cards: count } = ARC[modeRef.current];
+      // Read layout once, before changing any card styles in this frame.
+      const centerX = target.clientWidth / 2;
       const progress = reduce ? 0 : (now - started) / 34000;
       cards.current.forEach((card, index) => {
         if (!card) return;
@@ -49,21 +54,27 @@ function ArcGallery() {
         const phase = (index / count + progress) % 1;
         const degrees = 180 + phase * 180;
         const radians = degrees * Math.PI / 180;
-        card.style.left = `${target.clientWidth / 2 + radius * Math.cos(radians)}px`;
+        card.style.left = `${centerX + radius * Math.cos(radians)}px`;
         card.style.top = `${centerY + radius * Math.sin(radians)}px`;
         card.style.transform = `translate(-50%, -50%) rotate(${degrees - 270}deg) scale(${cardScale})`;
         // On wide screens the ends are on screen, so photos fade in and out there.
         card.style.opacity = modeRef.current === 'wide' ? String(Math.min(1, Math.sin(phase * Math.PI) * 2.2)) : '';
       });
-      if (!reduce) frame = requestAnimationFrame(position);
+      if (!reduce && visible) frame = requestAnimationFrame(position);
     };
     position(started);
-    return () => cancelAnimationFrame(frame);
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      if (visible && !reduce && !frame) frame = requestAnimationFrame(position);
+      if (!visible && frame) { cancelAnimationFrame(frame); frame = 0; }
+    }, { rootMargin: '200px 0px' });
+    if (container.current) observer.observe(container.current);
+    return () => { observer.disconnect(); cancelAnimationFrame(frame); };
   }, []);
 
   const { tickRadius, tickCenterY, tickStart, tickSpan, tickCount } = ARC[mode];
   const tickList = ticks.slice(0, tickCount);
-  return <><div className="photo-arc" ref={container} aria-hidden="true">{Array.from({ length: 10 }, (_, index) => <img key={index} ref={node => { cards.current[index] = node; }} src={asset(photos[index % photos.length])} className="carousel-card" style={{ '--card-width': `${[180,190,200,206,200,190,180][index % 7]}px`, '--card-height': `${[210,220,230,240,230,220,210][index % 7]}px` } as CSSProperties} alt="" />)}</div><div className="tick-arc" aria-hidden="true">{tickList.map((_, index) => { const degrees = tickStart + index * (tickSpan / (tickList.length - 1)); const angle = degrees * Math.PI / 180; return <img key={index} className="tick" src={asset('f2be9.svg')} style={{ left: `${Math.cos(angle) * tickRadius}px`, top: `${Math.sin(angle) * tickRadius + (tickCenterY - TICK_ARC_TOP)}px`, transform: `rotate(${degrees - 180}deg)` }} alt="" />; })}</div></>;
+  return <><div className="photo-arc" ref={container} aria-hidden="true">{Array.from({ length: 10 }, (_, index) => <img key={index} ref={node => { cards.current[index] = node; }} src={asset(photos[index % photos.length])} loading="lazy" decoding="async" className="carousel-card" style={{ '--card-width': `${[180,190,200,206,200,190,180][index % 7]}px`, '--card-height': `${[210,220,230,240,230,220,210][index % 7]}px` } as CSSProperties} alt="" />)}</div><div className="tick-arc" aria-hidden="true">{tickList.map((_, index) => { const degrees = tickStart + index * (tickSpan / (tickList.length - 1)); const angle = degrees * Math.PI / 180; return <img key={index} className="tick" src={asset('f2be9.svg')} style={{ left: `${Math.cos(angle) * tickRadius}px`, top: `${Math.sin(angle) * tickRadius + (tickCenterY - TICK_ARC_TOP)}px`, transform: `rotate(${degrees - 180}deg)` }} alt="" />; })}</div></>;
 }
 
 export function About() {

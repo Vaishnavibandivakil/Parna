@@ -1,20 +1,37 @@
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { asset } from '../assets';
-import { HeroScene } from './HeroScene';
 import { ProgramDialog } from './ProgramDialog';
 import { feelingToProgram, programs } from '../data/programs';
 import { smoothScroll } from '../animations/smoothScroll';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const HeroScene = lazy(() => import('./HeroScene').then(({ HeroScene }) => ({ default: HeroScene })));
+
 export function Hero() {
+  const [showScene, setShowScene] = useState(false);
   const [selected, setSelected] = useState<number | null>(null);
   const [choicesOpen, setChoicesOpen] = useState(false);
   const [dialog, setDialog] = useState<{ open: boolean; index: number }>({ open: false, index: 0 });
   const choices = useRef<HTMLDivElement>(null);
   const feelings = ['Constant Stress', 'Trouble Sleeping', 'Self Doubt', 'Emotional Burnout', 'Feeling Overwhelmed'];
+
+  useEffect(() => {
+    // The CSS gradient is the complete mobile and reduced-motion experience.
+    // Only add the costly WebGL texture on larger screens after the page settles.
+    const media = window.matchMedia('(min-width: 1025px) and (prefers-reduced-motion: no-preference)');
+    let timer = 0;
+    const update = () => {
+      window.clearTimeout(timer);
+      if (media.matches) timer = window.setTimeout(() => setShowScene(true), 6000);
+      else setShowScene(false);
+    };
+    media.addEventListener('change', update);
+    update();
+    return () => { window.clearTimeout(timer); media.removeEventListener('change', update); };
+  }, []);
 
   // The choices stay folded under the question until the visitor scrolls a little
   // (or taps the question). Picking one opens the matching program's details.
@@ -44,9 +61,9 @@ export function Hero() {
     setDialog({ open: true, index: feelingToProgram[feelings[index]] ?? 0 });
   };
   return <section className="hero" id="home">
-    <img className="hero-bg" src={asset('hero-bg.png')} alt="" />
+    <img className="hero-bg" src={asset('hero-bg-optimized.webp')} fetchPriority="high" alt="" />
     <div className="hero-panel">
-      <HeroScene />
+      {showScene && <Suspense fallback={null}><HeroScene /></Suspense>}
       <a className="brand" href="#home">Parna</a>
       <div className="hero-copy">
         <p className="hero-eyebrow">Hi, I'm Parna.</p>

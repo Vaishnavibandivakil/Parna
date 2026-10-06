@@ -58,7 +58,7 @@ export function ProgramDialog({ open, index, programs, onClose }: Props) {
       <button type="button" className="pd-close" aria-label="Close" onClick={onClose}>×</button>
 
       <figure className="pd-photo">
-        <img ref={photo} src={asset(program.image)} alt="" />
+        <img ref={photo} src={asset(program.image)} loading="lazy" decoding="async" alt="" />
         <figcaption>
           <span className="pd-index">{num(active)} <em>/ {num(count - 1)}</em></span>
           <p>{detail.line}</p>

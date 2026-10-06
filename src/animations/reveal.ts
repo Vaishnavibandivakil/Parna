@@ -45,52 +45,17 @@ function countUp(strong: HTMLElement, tl: gsap.core.Timeline, at: number | strin
  * Sections that already own their motion (transformation, journey cards,
  * programs grid, story deck) are left to their own timelines.
  */
-export function initReveals(root: HTMLElement, preloader: HTMLElement | null) {
+export function initReveals(root: HTMLElement) {
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const splits: SplitText[] = [];
   const q = (sel: string) => root.querySelector<HTMLElement>(sel);
   const qa = (sel: string) => Array.from(root.querySelectorAll<HTMLElement>(sel));
 
   if (reduce) {
-    preloader?.remove();
     return () => {};
   }
 
   const ctx = gsap.context(() => {
-    /* ---------- Hero: page-load intro (the gold panel drops in from above) ---------- */
-    const hidden = ['.hero-panel .brand', '.hero-eyebrow', '.hero-copy > p:not(.hero-eyebrow)', '.hero-cta', '.feelings'].map(q).filter(Boolean) as HTMLElement[];
-    gsap.set(hidden, { autoAlpha: 0 });
-    const panel = q('.hero-panel');
-    const panelDrops = window.matchMedia('(min-width: 1025px)').matches;
-    if (panel && panelDrops) gsap.set(panel, { yPercent: -112 });
-    gsap.set('.hero-bg', { scale: 1.08, autoAlpha: 0 });
-    const h1Lines = lines(q('.hero h1'), splits);
-    gsap.set(h1Lines, { yPercent: 140 });
-
-    const intro = gsap.timeline({ defaults: { ease: EASE }, paused: true });
-    intro
-      .to('.hero-bg', { scale: 1, autoAlpha: 1, duration: 2, ease: 'power2.out' }, 0)
-      .to('.hero-panel', { yPercent: 0, duration: panelDrops ? 1.5 : 0.01, ease: 'expo.out' }, 0.15)
-      .fromTo('.hero-panel .brand', { y: -14, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.9 }, 0.85)
-      .fromTo('.hero-eyebrow', rise, { ...settled, duration: 0.9 }, 0.9)
-      .to(h1Lines, { yPercent: 0, duration: 1.2, stagger: 0.1 }, 1)
-      .fromTo('.hero-copy > p:not(.hero-eyebrow)', rise, { ...settled, duration: 1 }, 1.4)
-      .fromTo(['.hero-cta', '.feelings'], rise, { ...settled, duration: 1, stagger: 0.12 }, 1.55);
-
-    /* ---------- Preloader curtain, then the intro ---------- */
-    if (preloader) {
-      const word = preloader.querySelector('.preloader-word');
-      const wordLines = lines(word, splits);
-      gsap.set(wordLines, { yPercent: 140 });
-      gsap.timeline({ defaults: { ease: EASE } })
-        .to(wordLines, { yPercent: 0, duration: 1 }, 0.1)
-        .to(wordLines, { yPercent: -110, duration: 0.7, ease: 'expo.in' }, 1.1)
-        .to(preloader, { yPercent: -100, duration: 1, ease: 'expo.inOut', onComplete: () => preloader.remove() }, 1.35)
-        .add(() => intro.play(), 1.55);
-    } else {
-      intro.play();
-    }
-
     /* ---------- About ---------- */
     const about = q('.about');
     if (about) {

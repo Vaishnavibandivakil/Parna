@@ -68,7 +68,7 @@ export function Journey() {
       <div className="journey-grid" ref={grid}>
         {copies.flatMap((copy) => steps.map((item) => (
           <article className="journey-photo" key={`${copy}-${item.step}`} aria-hidden={copy !== 1 && compact ? true : undefined}>
-            <img src={asset(item.image.src)} alt={item.image.alt} style={{ objectPosition: item.image.position }} />
+            <img src={asset(item.image.src)} loading="lazy" decoding="async" alt={item.image.alt} style={{ objectPosition: item.image.position }} />
             <span className="journey-step">{item.step}</span>
             <h3>{item.title}</h3>
             <p>{item.text}</p>

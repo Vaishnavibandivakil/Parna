@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { About } from './components/About';
 import { initReveals } from './animations/reveal';
 import { startSmoothScroll } from './animations/smoothScroll';
@@ -12,24 +12,22 @@ import { Transformation } from './components/Transformation';
 
 export default function App() {
   const root = useRef<HTMLDivElement>(null);
-  const preloader = useRef<HTMLDivElement>(null);
 
-  useLayoutEffect(() => startSmoothScroll(), []);
+  useEffect(() => startSmoothScroll(), []);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const el = root.current;
     if (!el) return;
     let cleanup: (() => void) | undefined;
     let cancelled = false;
-    const start = () => { if (!cancelled) cleanup = initReveals(el, preloader.current); };
-    // Wait for the web fonts so the line splits measure correctly, but never hang.
+    const start = () => { if (!cancelled) cleanup = initReveals(el); };
+    // Below-the-fold line splits need font metrics; the hero remains visible while fonts load.
     Promise.race([document.fonts?.ready ?? Promise.resolve(), new Promise((r) => setTimeout(r, 1500))]).then(start);
     return () => { cancelled = true; cleanup?.(); };
   }, []);
 
   return (
     <div ref={root}>
-      <div className="preloader" ref={preloader} aria-hidden="true"><span className="preloader-word brand">Parna</span></div>
       <main>
         <Hero />
         <About />

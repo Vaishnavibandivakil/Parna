@@ -97,7 +97,7 @@ export function Transformation({ mode = 'drag', onCtaClick, className = '' }: Tr
   const gainRefs = useRef<HTMLDivElement[]>([]);
   const api = useRef<Api | null>(null);
   const mobileRoot = useRef<HTMLDivElement>(null);
-  const [compact, setCompact] = useState(() => typeof window !== 'undefined' && window.matchMedia('(max-width: 1024px)').matches);
+  const [compact, setCompact] = useState(false);
 
   useLayoutEffect(() => {
     const mq = window.matchMedia('(max-width: 1024px)');
