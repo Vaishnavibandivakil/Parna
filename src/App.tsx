@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { About } from './components/About';
 import { initReveals } from './animations/reveal';
 import { startSmoothScroll } from './animations/smoothScroll';
@@ -13,8 +13,22 @@ import { whatsappUrl } from './contact';
 
 export default function App() {
   const root = useRef<HTMLDivElement>(null);
+  const [showWhatsApp, setShowWhatsApp] = useState(false);
 
   useEffect(() => startSmoothScroll(), []);
+
+  useEffect(() => {
+    const about = document.getElementById('about');
+    if (!about) return;
+    const update = () => setShowWhatsApp(about.getBoundingClientRect().top <= 0);
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    return () => {
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    };
+  }, []);
 
   useEffect(() => {
     const el = root.current;
@@ -39,15 +53,15 @@ export default function App() {
         <Programs />
       </main>
       <Footer />
-      <a
+      {showWhatsApp && <a
         className="whatsapp-float"
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat with Parna on WhatsApp"
       >
-        <img src="/assets/whatsapp.png" width="64" height="64" alt="" />
-      </a>
+        <img src="/assets/whatsapp-canva.png" width="64" height="64" alt="" />
+      </a>}
     </div>
   );
 }
