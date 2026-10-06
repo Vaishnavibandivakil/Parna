@@ -103,5 +103,5 @@ export function Stories() {
 
     return () => mm.revert();
   }, []);
-  return <section className="stories section" id="stories"><div className="stories-stack-heading"><span className="badge">CLIENT STORIES</span><h2>Real stories of growth, healing<br /> and lasting change</h2></div><div className="story-deck" ref={deck}><div className="story-stack-pin" ref={pin}>{copies.flatMap((copy) => stories.map((story, index) => <StoryCard key={`${copy}-${story.label}`} story={story} index={copy * stories.length + index} cardRef={node => { if (copy === 0) cards.current[index] = node; }} />))}</div></div></section>;
+  return <section className="stories section" id="stories"><div className="stories-stack-heading"><span className="badge section-badge">CLIENT STORIES</span><h2>Real stories of growth, healing<br /> and lasting change</h2></div><div className="story-deck" ref={deck}><div className="story-stack-pin" ref={pin}>{copies.flatMap((copy) => stories.map((story, index) => <StoryCard key={`${copy}-${story.label}`} story={story} index={copy * stories.length + index} cardRef={node => { if (copy === 0) cards.current[index] = node; }} />))}</div></div></section>;
 }

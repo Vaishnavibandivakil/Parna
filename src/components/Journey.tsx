@@ -62,7 +62,7 @@ export function Journey() {
   return (
     <section className="how section" id="how">
       <div className="section-heading">
-        <span className="badge">HOW PARNA PRESENCE WORKS</span>
+        <span className="badge section-badge">HOW PARNA PRESENCE WORKS</span>
         <h2>Your journey to feeling<br />better starts here</h2>
       </div>
       <div className="journey-grid" ref={grid}>

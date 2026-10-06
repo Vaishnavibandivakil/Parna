@@ -336,21 +336,15 @@ export function Transformation({ mode = 'drag', onCtaClick, className = '' }: Tr
       ref={sectionRef}
       className={`relative w-full overflow-hidden bg-yellow-950 pt-20 pb-14 flex flex-col items-center gap-12 text-white ${className}`}
     >
-      {/* Badge */}
-      <div
-        data-reveal
-        className="px-4 py-2 bg-white rounded-[100px] outline outline-1 outline-offset-[-1px] outline-[rgba(255,247,237,0.1)] inline-flex items-center gap-2"
-      >
-        <span className={`text-black text-xs font-semibold uppercase ${SANS}`}>Join Parna Presence today</span>
+      <div className="tf-section-heading">
+        <span data-reveal className="badge section-badge">JOIN PARNA PRESENCE TODAY</span>
+        <h2
+          data-reveal
+          className={`max-w-[1050px] text-white text-5xl md:text-6xl font-normal leading-[1.03] ${SERIF}`}
+        >
+          A healthier tomorrow starts today
+        </h2>
       </div>
-
-      {/* Heading */}
-      <h2
-        data-reveal
-        className={`max-w-[1050px] px-6 text-center text-white text-5xl md:text-6xl font-normal leading-[1.03] ${SERIF}`}
-      >
-        A healthier tomorrow starts today
-      </h2>
 
       {/* Small screens: vertical, scroll-driven version */}
       {compact ? (

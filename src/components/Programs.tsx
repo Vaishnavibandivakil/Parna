@@ -293,7 +293,7 @@ export function Programs() {
   return (
     <section className="programs section" id="programs">
       <div className="programs-heading">
-        <span className="badge">WAYS TO WORK TOGETHER</span>
+        <span className="badge section-badge">WAYS TO WORK TOGETHER</span>
         <h2>Sessions and programmes</h2>
       </div>
       <div className="program-grid" ref={grid}>
