@@ -38,6 +38,15 @@ export default function App() {
         <Programs />
       </main>
       <Footer />
+      <a
+        className="whatsapp-float"
+        href="https://wa.me/919133533006"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Chat with Parna on WhatsApp"
+      >
+        <img src="/assets/whatsapp.png" width="64" height="64" alt="" />
+      </a>
     </div>
   );
 }
