@@ -292,7 +292,10 @@ export function Programs() {
 
   return (
     <section className="programs section" id="programs">
-      <h2>Sessions and programmes</h2>
+      <div className="programs-heading">
+        <span className="badge">WAYS TO WORK TOGETHER</span>
+        <h2>Sessions and programmes</h2>
+      </div>
       <div className="program-grid" ref={grid}>
         {copies.map((copy) => (
           <Fragment key={copy}>

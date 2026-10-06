@@ -189,6 +189,10 @@
 @media(max-width:800px){.stories-stack-heading{position:static}.story-deck{height:auto}.story-stack-pin{position:relative;top:auto;height:auto;overflow:visible}.story-deck .story-card{position:relative;inset:auto;top:auto;height:auto;min-height:0;margin:0 0 36px;transform:none!important;opacity:1!important}}
 
 /* Programs: video tiles + text panels that extend on hover */
+.programs-heading{margin-bottom:48px;padding-bottom:24px;border-bottom:1px solid #d9d1c7;text-align:left}
+.programs-heading>.badge{background:#f3e8d4;border-color:#d9bf8f;color:#5a3a12}
+.programs-heading>h2{margin-top:24px;font-size:44px;line-height:1.1;letter-spacing:0}
+@media(max-width:800px){.programs-heading{margin-bottom:32px;padding-bottom:20px}.programs-heading>h2{font-size:40px}}
 .program-grid{overflow:visible}
 .program-grid>video{display:block;background:#e8dccb}
 .program-grid article{position:relative;overflow:visible;padding:0;background:#fff9f0;outline:0;cursor:pointer}
@@ -445,8 +449,8 @@ html.lenis,html.lenis body{height:auto}
 .transformation .map-center{border:0;z-index:3}.transformation .map-center:before{display:none}.transformation .map-divider{position:absolute;left:calc(50% - .5px);top:40px;width:1px;height:420px;background:linear-gradient(transparent,#ffe0a6,transparent);pointer-events:none;z-index:2}.transformation .map-center{touch-action:none}.transformation .map-left,.transformation .map-right{z-index:1}@media(max-width:800px){.transformation .map-divider{display:none}}
 
 /* Persistent WhatsApp contact shortcut */
-.whatsapp-float{position:fixed;right:max(20px,env(safe-area-inset-right));bottom:max(20px,env(safe-area-inset-bottom));z-index:50;display:block;width:48px;height:48px;padding:8px;border-radius:50%;background:#fff;box-shadow:0 5px 18px rgba(0,0,0,.18);transition:transform .2s ease,box-shadow .2s ease}
+.whatsapp-float{position:fixed;right:max(20px,env(safe-area-inset-right));bottom:max(20px,env(safe-area-inset-bottom));z-index:50;display:block;width:48px;height:48px;padding:8px;border-radius:50%;transition:transform .2s ease}
 .whatsapp-float img{display:block;width:100%;height:100%;object-fit:contain}
-.whatsapp-float:hover{transform:translateY(-2px);box-shadow:0 7px 20px rgba(0,0,0,.22)}
+.whatsapp-float:hover{transform:translateY(-2px)}
 @media(max-width:600px){.whatsapp-float{top:max(24px,env(safe-area-inset-top));right:max(16px,env(safe-area-inset-right));bottom:auto;width:44px;height:44px;padding:7px}}
 @media(prefers-reduced-motion:reduce){.whatsapp-float{transition:none}}
