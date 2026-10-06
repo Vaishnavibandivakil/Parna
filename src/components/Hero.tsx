@@ -67,7 +67,7 @@ export function Hero() {
       <a className="brand" href="#home">Parna</a>
       <div className="hero-copy">
         <p className="hero-eyebrow">Hi, I'm Parna.</p>
-        <h1>A certified <em>life coach</em><br />and <em>healer</em>.</h1>
+        <h1>A holistic <em>life coach</em><br />and <em>healer</em>.</h1>
         <p>I help people stop resisting life and move through it with more ease.</p>
         <a className="hero-cta" href="#assessment" onClick={startJourney}>START YOUR JOURNEY<span aria-hidden>→</span></a>
         <div className="feelings" id="assessment">
