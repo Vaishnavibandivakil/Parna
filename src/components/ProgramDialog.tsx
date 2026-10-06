@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { asset } from '../assets';
 import { smoothScroll } from '../animations/smoothScroll';
+import { whatsappUrl } from '../contact';
 
 type Detail = { line: string; summary: string; facts: string[]; includes: string[] };
 
@@ -78,7 +79,7 @@ export function ProgramDialog({ open, index, programs, onClose }: Props) {
         <div className="pd-foot">
           <p>Not sure which fits? Start with a free 20-minute conversation.</p>
           <div className="pd-actions">
-            <a className="pd-link" href="#newsletter" onClick={onClose}>Get in touch <span aria-hidden>→</span></a>
+            <a className="pd-link" href={whatsappUrl} target="_blank" rel="noopener noreferrer" onClick={onClose}>Get in touch <span aria-hidden>→</span></a>
             <div className="pd-nav">
               <button type="button" onClick={() => go(active - 1)} aria-label="Previous program">←</button>
               <button type="button" onClick={() => go(active + 1)} aria-label="Next program">→</button>
