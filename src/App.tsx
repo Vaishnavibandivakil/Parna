@@ -60,7 +60,7 @@ export default function App() {
         rel="noopener noreferrer"
         aria-label="Chat with Parna on WhatsApp"
       >
-        <img src="/assets/whatsapp-canva.png" width="64" height="64" alt="" />
+        <img src="/assets/whatsapp-canva.png" width="32" height="32" alt="" />
       </a>}
     </div>
   );
