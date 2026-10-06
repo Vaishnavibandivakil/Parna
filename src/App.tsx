@@ -10,6 +10,8 @@ import { Services } from './components/Services';
 import { Stories } from './components/Stories';
 import { Transformation } from './components/Transformation';
 
+const whatsappMessage = 'Hi Parna, I found your website and would like to know more about your coaching services.';
+
 export default function App() {
   const root = useRef<HTMLDivElement>(null);
 
@@ -40,7 +42,7 @@ export default function App() {
       <Footer />
       <a
         className="whatsapp-float"
-        href="https://wa.me/919133533006"
+        href={`https://wa.me/919133533006?text=${encodeURIComponent(whatsappMessage)}`}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat with Parna on WhatsApp"
