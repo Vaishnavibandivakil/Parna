@@ -454,3 +454,19 @@ html.lenis,html.lenis body{height:auto}
 .whatsapp-float:hover{transform:translateY(-2px)}
 @media(max-width:600px){.whatsapp-float{top:max(24px,env(safe-area-inset-top));right:max(16px,env(safe-area-inset-right));bottom:auto;width:44px;height:44px;padding:7px}}
 @media(prefers-reduced-motion:reduce){.whatsapp-float{transition:none}}
+
+/* Shared labels and aligned headings after the About photo arc */
+.badge.section-badge{background:#f3e8d4;border-color:#d9bf8f;color:#5a3a12}
+.section-heading,.services-heading,.stories-stack-heading,.programs-heading{text-align:left}
+.section-heading h2,.services-heading h2,.stories-stack-heading h2,.programs-heading h2{font-size:44px;line-height:1.1;letter-spacing:0;text-align:left}
+.section-heading h2,.services-heading h2{margin-top:24px}
+#transformation>h2{text-align:center}
+@media(min-width:1025px){
+  .how,.services,.stories,.programs{padding-left:5.3%;padding-right:5.3%}
+}
+@media(max-width:1024px){
+  .how,.services,.stories,.programs{padding-left:20px;padding-right:20px}
+}
+@media(max-width:800px){
+  .section-heading h2,.services-heading h2,.stories-stack-heading h2,.programs-heading h2{font-size:40px}
+}
