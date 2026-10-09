@@ -215,7 +215,7 @@
 .program-panel.anchor-top{top:-1px}
 .program-panel.anchor-bottom{bottom:-1px}
 .program-panel>*{position:relative;z-index:1}
-.program-details{height:0;overflow:hidden}
+.program-details{height:0;overflow:hidden;flex-shrink:0}
 .program-details-inner{display:grid;gap:10px;align-content:start;padding-top:14px}
 .program-panel.anchor-bottom .program-details-inner{padding-top:0;padding-bottom:16px}
 .program-details-inner>*{margin:0}

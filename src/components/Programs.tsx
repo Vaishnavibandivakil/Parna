@@ -267,11 +267,15 @@ export function Programs() {
         if (isDesktop()) {
           const cell = box.getBoundingClientRect().height;
           const full = columnHeight();
-          const hidden = Math.max(0, full - cell);
           pinHead();
-          panel.style.height = `${full}px`;
-          box.style.setProperty('--panel-h', `${full}px`);
           details.style.height = 'auto';
+          // The copy can be taller than the two grid tiles at narrower desktop
+          // widths. Measure its natural height before applying the reveal mask.
+          panel.style.height = 'max-content';
+          const expanded = Math.max(full, panel.getBoundingClientRect().height);
+          const hidden = Math.max(0, expanded - cell);
+          panel.style.height = `${expanded}px`;
+          box.style.setProperty('--panel-h', `${expanded}px`);
           panel.style.clipPath = rows[i] ? `inset(${hidden}px 0px 0px 0px)` : `inset(0px 0px ${hidden}px 0px)`;
           reveal.invalidate();
           active = reveal;
