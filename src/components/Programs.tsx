@@ -127,7 +127,8 @@ export function Programs() {
     // bottom row, so it extends upward; the other two extend downward.
     const rows: boolean[] = [];
     const syncRows = () => {
-      const columns = getComputedStyle(el).gridTemplateColumns.split(' ').length;
+      const layout = getComputedStyle(el);
+      const columns = layout.display === 'grid' ? layout.gridTemplateColumns.split(' ').length : 1;
       boxes.forEach((box, i) => {
         const fromBottom = columns >= 3 && i === 2;
         rows[i] = fromBottom;
@@ -172,7 +173,10 @@ export function Programs() {
       const more = panel.querySelector<HTMLButtonElement>('.program-more')!;
       const details = panel.querySelector<HTMLElement>('.program-details')!;
       const items = Array.from(details.querySelector('.program-details-inner')!.children);
-      const isDesktop = () => getComputedStyle(el).gridTemplateColumns.split(' ').length >= 3;
+      const isDesktop = () => {
+        const layout = getComputedStyle(el);
+        return layout.display === 'grid' && layout.gridTemplateColumns.split(' ').length >= 3;
+      };
 
       /** Full height of this card's column: its own cell plus the tile above/below it. */
       const columnHeight = () => {

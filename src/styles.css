@@ -591,10 +591,14 @@ html.lenis{scroll-behavior:auto!important}
   .pd-foot>p{font-size:17px}
 }
 
-/* Open foldables and small tablets in landscape have much less vertical space
-   than portrait tablets, so bring the About copy up under a shallower arc. */
+/* Give photos their own space when the circular layout would cross the copy. */
+@media(min-width:480px) and (max-width:800px), (min-width:801px) and (max-width:1024px) and (max-height:600px) and (orientation:landscape){
+  .photo-arc{height:230px}
+  .about-copy{padding-top:250px}
+}
+@media(min-width:480px) and (max-width:800px){
+  .photo-arc .carousel-card{width:var(--card-width);height:var(--card-height)}
+}
 @media(min-width:801px) and (max-width:1024px) and (max-height:600px) and (orientation:landscape){
-  .photo-arc{height:540px}
-  .about-copy{padding-top:230px}
   .about-copy h2{font-size:clamp(38px,4.7vw,48px)}
 }
