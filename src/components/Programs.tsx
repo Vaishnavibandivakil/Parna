@@ -1,9 +1,8 @@
-import { Fragment, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { asset } from '../assets';
 import { useCompact } from '../hooks/useCompact';
-import { useLoopCarousel } from '../hooks/useLoopCarousel';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -96,8 +95,6 @@ function Card({ card, index }: { card: typeof cards[number]; index: number }) {
 export function Programs() {
   const grid = useRef<HTMLDivElement>(null);
   const compact = useCompact();
-  useLoopCarousel(grid, compact, 6);
-  const copies = compact ? [0, 1, 2] : [0];
 
   useEffect(() => {
     const el = grid.current;
@@ -142,7 +139,7 @@ export function Programs() {
     const mm = gsap.matchMedia();
     const cleanups: Array<() => void> = [];
 
-    mm.add('(prefers-reduced-motion: no-preference)', () => {
+    mm.add('(min-width: 1025px) and (prefers-reduced-motion: no-preference)', () => {
       // 1) Scroll reveal: the text panels unfold in place as the grid enters.
       const tl = gsap.timeline({
         defaults: { ease: 'power2.out', duration: 1 },
@@ -306,16 +303,12 @@ export function Programs() {
         <h2>Sessions and programmes</h2>
       </div>
       <div className="program-grid" ref={grid}>
-        {copies.map((copy) => (
-          <Fragment key={copy}>
-            <Card card={cards[0]} index={copy * 3} />
-            <Clip clip={clips[0]} />
-            <Card card={cards[1]} index={copy * 3 + 1} />
-            <Clip clip={clips[1]} />
-            <Card card={cards[2]} index={copy * 3 + 2} />
-            <Clip clip={clips[2]} />
-          </Fragment>
-        ))}
+        <Card card={cards[0]} index={0} />
+        <Clip clip={clips[0]} />
+        <Card card={cards[1]} index={1} />
+        <Clip clip={clips[1]} />
+        <Card card={cards[2]} index={2} />
+        <Clip clip={clips[2]} />
       </div>
     </section>
   );

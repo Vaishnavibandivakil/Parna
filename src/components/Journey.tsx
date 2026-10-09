@@ -2,8 +2,6 @@ import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { asset } from '../assets';
-import { useCompact } from '../hooks/useCompact';
-import { useLoopCarousel } from '../hooks/useLoopCarousel';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -36,15 +34,12 @@ const steps = [
 
 export function Journey() {
   const grid = useRef<HTMLDivElement>(null);
-  const compact = useCompact();
-  useLoopCarousel(grid, compact, steps.length);
-  const copies = compact ? [0, 1, 2] : [0];
 
   useEffect(() => {
     const el = grid.current;
     if (!el) return;
     const mm = gsap.matchMedia();
-    mm.add('(prefers-reduced-motion: no-preference)', () => {
+    mm.add('(min-width: 1025px) and (prefers-reduced-motion: no-preference)', () => {
       // The whole grid rises as one block so the rows stay perfectly level;
       // only the fade is staggered.
       const cards = el.querySelectorAll('article');
@@ -66,14 +61,14 @@ export function Journey() {
         <h2>Your journey to feeling<br />better starts here</h2>
       </div>
       <div className="journey-grid" ref={grid}>
-        {copies.flatMap((copy) => steps.map((item) => (
-          <article className="journey-photo" key={`${copy}-${item.step}`} aria-hidden={copy !== 1 && compact ? true : undefined}>
+        {steps.map((item) => (
+          <article className="journey-photo" key={item.step}>
             <img src={asset(item.image.src)} loading="lazy" decoding="async" alt={item.image.alt} style={{ objectPosition: item.image.position }} />
             <span className="journey-step">{item.step}</span>
             <h3>{item.title}</h3>
             <p>{item.text}</p>
           </article>
-        )))}
+        ))}
       </div>
     </section>
   );

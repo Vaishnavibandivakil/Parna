@@ -61,7 +61,7 @@ export function ProgramDialog({ open, index, programs, onClose }: Props) {
       <figure className="pd-photo">
         <img ref={photo} src={asset(program.image)} loading="lazy" decoding="async" alt="" />
         <figcaption>
-          <span className="pd-index">{num(active)} <em>/ {num(count - 1)}</em></span>
+          <span className="pd-index">{num(active)} <em>/ {num(count)}</em></span>
           <p>{detail.line}</p>
         </figcaption>
       </figure>

@@ -102,6 +102,7 @@ export function Transformation({ mode = 'drag', onCtaClick, className = '' }: Tr
   useLayoutEffect(() => {
     const mq = window.matchMedia('(max-width: 1024px)');
     const onChange = () => setCompact(mq.matches);
+    onChange();
     mq.addEventListener('change', onChange);
     return () => mq.removeEventListener('change', onChange);
   }, []);
@@ -118,16 +119,11 @@ export function Transformation({ mode = 'drag', onCtaClick, className = '' }: Tr
       const struggles = Array.from(root.querySelectorAll<HTMLElement>('.tf-struggles .tf-pill'));
       const gains = Array.from(root.querySelectorAll<HTMLElement>('.tf-gains .tf-pill'));
       const travel = () => track.offsetHeight - handle.offsetHeight;
-      gsap.set(struggles, { autoAlpha: 0.35, x: -6 });
-      gsap.set(gains, { autoAlpha: 0.25, x: -6, scale: 0.97 });
       const tl = gsap.timeline({
         defaults: { ease: 'none' },
         scrollTrigger: { trigger: root, start: 'top 72%', end: 'bottom 40%', scrub: 1.2, invalidateOnRefresh: true },
       });
-      tl.to([handle, glow], { y: travel, duration: 2 }, 0)
-        .to(struggles, { autoAlpha: 1, x: 0, duration: 0.5, stagger: 0.09 }, 0.05)
-        .to(struggles, { autoAlpha: 0.45, duration: 0.6 }, 1.05)
-        .to(gains, { autoAlpha: 1, x: 0, scale: 1, duration: 0.5, stagger: 0.09 }, 1.05);
+      tl.to([handle, glow], { y: travel, duration: 2 }, 0);
     }, root);
     return () => ctx.revert();
   }, [compact]);
@@ -345,7 +341,7 @@ export function Transformation({ mode = 'drag', onCtaClick, className = '' }: Tr
 
       {/* Small screens: vertical, scroll-driven version */}
       {compact ? (
-        <div ref={mobileRoot} data-reveal className="tf-mobile">
+        <div key="mobile" ref={mobileRoot} data-reveal className="tf-mobile">
           <div className="tf-track"><div className="tf-glow" /><div className="tf-handle"><span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#f8fafc" strokeWidth="2" strokeLinecap="round" aria-hidden><path d="M7 2v10M2 7h10" /></svg></span></div></div>
           <div className="tf-group tf-struggles">
             <h3 className={`text-white/70 text-2xl font-normal ${SERIF}`}>Where You Are</h3>
@@ -357,7 +353,7 @@ export function Transformation({ mode = 'drag', onCtaClick, className = '' }: Tr
           </div>
         </div>
       ) : (
-      <div ref={fitRef} data-reveal className="relative w-full" style={{ height: STAGE_H }}>
+      <div key="desktop" ref={fitRef} data-reveal className="relative w-full" style={{ height: STAGE_H }}>
         <div
           ref={stageRef}
           className="absolute top-0 left-1/2 origin-top"

@@ -8,7 +8,8 @@ let instance: Lenis | null = null;
 
 /** Start Lenis smooth scrolling, driven by GSAP's ticker so ScrollTrigger stays in sync. */
 export function startSmoothScroll() {
-  if (instance || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return () => {};
+  // Native touch scrolling avoids fighting the horizontal swipe rows on phones.
+  if (instance || window.matchMedia('(prefers-reduced-motion: reduce), (pointer: coarse) and (max-width: 1024px)').matches) return () => {};
   const lenis = new Lenis({
     lerp: 0.12,
     wheelMultiplier: 1,

@@ -420,7 +420,7 @@ html.lenis{scroll-behavior:auto!important}
 
 /* Story cards: benefits fold behind "View Details" on small screens */
 .benefits-wrap{width:100%}
-.story-toggle{border:0;cursor:pointer}
+.story-toggle{border:0;cursor:pointer;color:#2c221e;-webkit-appearance:none;appearance:none}
 .story-toggle .arrow img{transition:rotate .4s cubic-bezier(.2,.7,.2,1)}
 .story-toggle[aria-expanded=true] .arrow img{rotate:90deg}
 @media(max-width:1024px){.benefits-wrap{height:0;overflow:hidden}.story-more{font:400 15px/1.6 Inter,sans-serif;color:#524f4a;padding-top:18px}.benefits{padding-top:20px;border-top:1px solid #d9d1c7;margin-top:18px}.story-copy{gap:16px}}
@@ -475,7 +475,7 @@ html.lenis{scroll-behavior:auto!important}
 .whatsapp-float{position:fixed;right:max(20px,env(safe-area-inset-right));bottom:max(20px,env(safe-area-inset-bottom));z-index:50;display:block;width:48px;height:48px;padding:8px;border-radius:50%;transition:transform .2s ease}
 .whatsapp-float img{display:block;width:100%;height:100%;object-fit:contain}
 .whatsapp-float:hover{transform:translateY(-2px)}
-@media(max-width:600px){.whatsapp-float{top:max(24px,env(safe-area-inset-top));right:max(16px,env(safe-area-inset-right));bottom:auto;width:44px;height:44px;padding:7px}}
+@media(max-width:600px){.whatsapp-float{top:auto;right:max(16px,env(safe-area-inset-right));bottom:max(24px,calc(env(safe-area-inset-bottom) + 16px));width:44px;height:44px;padding:7px}}
 @media(prefers-reduced-motion:reduce){.whatsapp-float{transition:none}}
 
 /* Shared labels and aligned headings after the About photo arc */
@@ -501,4 +501,26 @@ html.lenis{scroll-behavior:auto!important}
 }
 @media(max-width:800px){
   .section-heading h2,.services-heading h2,.stories-stack-heading h2,.programs-heading h2{font-size:40px}
+}
+
+/* Phone layout: readable headings, steady native swipe rows and clear actions. */
+@media(max-width:1024px){
+  .journey-grid,.program-grid,.story-stack-pin{scroll-snap-type:x proximity;overscroll-behavior-x:contain}
+  .journey-grid article,.program-grid>*,.story-deck .story-card{scroll-snap-stop:normal}
+  #transformation{padding-inline:20px}
+}
+@media(max-width:900px){
+  dialog.program-dialog{grid-template-rows:180px auto;align-content:start;max-height:calc(100dvh - 24px);overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+  .pd-photo{height:180px;min-height:0}
+  .pd-content{padding:18px 20px 22px}
+  .pd-copy{padding:0 0 18px;gap:10px}
+  .pd-actions{flex-direction:row;align-items:center}
+  .pd-close{top:12px;right:12px}
+}
+@media(max-width:600px){
+  .programs-heading h2{font-size:clamp(34px,9vw,40px);max-width:100%;white-space:normal;overflow-wrap:normal}
+  .section-heading h2,.services-heading h2,.stories-stack-heading h2{font-size:clamp(34px,9vw,40px)}
+  .story-deck .story-photo{min-height:300px}
+  .story-copy .story-toggle{color:#2c221e}
+  footer{padding-bottom:max(72px,calc(env(safe-area-inset-bottom) + 48px))}
 }

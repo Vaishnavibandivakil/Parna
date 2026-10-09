@@ -3,7 +3,6 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { asset } from '../assets';
 import { useCompact } from '../hooks/useCompact';
-import { useLoopCarousel } from '../hooks/useLoopCarousel';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -29,9 +28,6 @@ function StoryCard({ story, index, cardRef }: { story: typeof stories[number]; i
 }
 export function Stories() {
   const deck = useRef<HTMLDivElement>(null); const pin = useRef<HTMLDivElement>(null); const cards = useRef<(HTMLDivElement | null)[]>([]);
-  const compact = useCompact();
-  useLoopCarousel(pin, compact, stories.length);
-  const copies = compact ? [0, 1, 2] : [0];
   useEffect(() => {
     const target = deck.current;
     const sticky = pin.current;
@@ -103,5 +99,5 @@ export function Stories() {
 
     return () => mm.revert();
   }, []);
-  return <section className="stories section" id="stories"><div className="stories-stack-heading"><span className="badge section-badge">CLIENT STORIES</span><h2>Real stories of growth, healing<br /> and lasting change</h2></div><div className="story-deck" ref={deck}><div className="story-stack-pin" ref={pin}>{copies.flatMap((copy) => stories.map((story, index) => <StoryCard key={`${copy}-${story.label}`} story={story} index={copy * stories.length + index} cardRef={node => { if (copy === 0) cards.current[index] = node; }} />))}</div></div></section>;
+  return <section className="stories section" id="stories"><div className="stories-stack-heading"><span className="badge section-badge">CLIENT STORIES</span><h2>Real stories of growth, healing<br /> and lasting change</h2></div><div className="story-deck" ref={deck}><div className="story-stack-pin" ref={pin}>{stories.map((story, index) => <StoryCard key={story.label} story={story} index={index} cardRef={node => { cards.current[index] = node; }} />)}</div></div></section>;
 }
