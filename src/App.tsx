@@ -4,6 +4,7 @@ import { initReveals } from './animations/reveal';
 import { startSmoothScroll } from './animations/smoothScroll';
 import { Footer } from './components/Footer';
 import { Hero } from './components/Hero';
+import { Preloader } from './components/Preloader';
 import { Journey } from './components/Journey';
 import { Programs } from './components/Programs';
 import { Services } from './components/Services';
@@ -43,6 +44,7 @@ export default function App() {
 
   return (
     <div ref={root}>
+      <Preloader />
       <main>
         <Hero />
         <About />

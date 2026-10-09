@@ -440,6 +440,25 @@ html.lenis,html.lenis body{height:auto}
 .footer-social a:hover{text-decoration-color:#fff}
 @media(max-width:800px){.footer-simple{grid-template-columns:1fr}.footer-brand{grid-column:auto}}
 
+/* Hero logo mark */
+.hero-panel .brand{display:inline-flex;align-items:center;gap:14px}
+.brand-mark{height:56px;width:auto;flex-shrink:0;filter:drop-shadow(0 4px 10px rgba(0,0,0,.25))}
+@media(max-width:1024px){.brand-mark{height:46px}}
+
+.footer-brand>a{gap:12px}
+.footer-brand .brand-mark{height:40px;width:auto}
+
+/* Logo lockup */
+.brand-logo{display:inline-block;line-height:0;font-size:0;letter-spacing:0}
+.hero-panel .brand-logo{margin:-18px 0 0 -14px}
+.hero-panel .brand-logo img{width:190px;height:auto;filter:drop-shadow(0 6px 14px rgba(0,0,0,.25))}
+.footer-brand .brand-logo img{width:170px;height:auto;margin-left:-10px}
+@media(max-width:1024px){.hero-panel .brand-logo img{width:150px}}
+
+/* Preloader curtain */
+.preloader{position:fixed;inset:0;z-index:200;background:#3a2408;display:grid;place-items:center;will-change:transform}
+.preloader-logo{width:clamp(220px,28vw,360px);height:auto;opacity:0;filter:drop-shadow(0 10px 30px rgba(0,0,0,.35))}
+
 /* Transformation glow */
 .transformation{background:radial-gradient(ellipse 430px 300px at 50% 52%,rgba(201,126,27,.72) 0%,rgba(137,76,9,.48) 42%,rgba(87,43,0,0) 76%),linear-gradient(180deg,#603000 0%,#522700 100%)}
 .transformation .where{font:italic 24px/1 'Instrument Serif',serif;color:#fff0e0}

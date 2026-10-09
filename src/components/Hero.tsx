@@ -64,7 +64,7 @@ export function Hero() {
     <img className="hero-bg" src={asset('hero-bg-optimized.webp')} fetchPriority="high" alt="" />
     <div className="hero-panel">
       {showScene && <Suspense fallback={null}><HeroScene /></Suspense>}
-      <a className="brand" href="#home">Parna</a>
+      <a className="brand brand-logo" href="#home"><img src={asset('logo-lockup.png')} alt="Parna Presence" /></a>
       <div className="hero-copy">
         <p className="hero-eyebrow">Hi, I'm Parna.</p>
         <h1>A holistic <em>life coach</em><br />and <em>healer</em>.</h1>
