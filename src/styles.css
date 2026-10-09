@@ -484,6 +484,15 @@ html.lenis,html.lenis body{height:auto}
 .section-heading h2,.services-heading h2,.stories-stack-heading h2,.programs-heading h2{font-size:44px;line-height:1.1;letter-spacing:0;text-align:left}
 .section-heading h2,.services-heading h2{margin-top:24px}
 #transformation>h2{text-align:center}
+
+/* Footer contact address replaces the old email collection form. */
+.newsletter-contact{display:flex;align-items:center;gap:12px;flex:0 1 540px;min-width:0;min-height:60px;padding:6px 6px 6px 20px;border:1px solid #ffffff26;border-radius:30px;background:#55410ab3}
+.newsletter-email{flex:1;min-width:0;color:#eadfd7;font-size:14px;white-space:nowrap}
+.newsletter-book{display:flex;flex:none;align-items:center;gap:12px;white-space:nowrap;border-radius:24px;background:#fff;padding:12px 12px 12px 24px;color:#1f0d04;font:700 14px 'Instrument Sans',sans-serif}
+.newsletter-book span{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#3d2508}
+.newsletter-book img{width:10px;height:10px}
+@media(max-width:1100px){.newsletter{display:block}.newsletter-contact{width:100%;max-width:540px;margin-top:30px}}
+@media(max-width:600px){.newsletter-contact{flex-wrap:wrap;border-radius:20px;padding:12px;gap:12px}.newsletter-email{flex-basis:100%;white-space:normal;overflow-wrap:anywhere}.newsletter-book{width:100%;justify-content:space-between}}
 @media(min-width:1025px){
   .how,.services,.stories,.programs{padding-left:5.3%;padding-right:5.3%}
 }

@@ -46,9 +46,9 @@ const cards = [
 
 /** Show a matching still while each clip loads as it enters the viewport. */
 const clips = [
-  { src: 'parna-7658', poster: 'videos/parna-7658.webp', label: 'Parna standing by a leafy balcony' },
-  { src: 'parna-7667', poster: 'videos/parna-7667.webp', label: 'Parna reading on a sofa' },
-  { src: 'parna-7685', poster: 'videos/parna-7685.webp', label: 'Parna looking out from a balcony' },
+  { src: 'parna-7658-loop', poster: 'videos/parna-7658.webp', label: 'Parna standing by a leafy balcony' },
+  { src: 'parna-7667-loop', poster: 'videos/parna-7667.webp', label: 'Parna reading on a sofa' },
+  { src: 'parna-7685-loop', poster: 'videos/parna-7685.webp', label: 'Parna looking out from a balcony' },
 ];
 
 function Clip({ clip }: { clip: typeof clips[number] }) {
@@ -56,12 +56,18 @@ function Clip({ clip }: { clip: typeof clips[number] }) {
     <video
       className="program-video"
       muted
+      autoPlay
       loop
       playsInline
       preload="none"
       poster={asset(clip.poster)}
       data-src={`/assets/videos/${clip.src}.mp4`}
       aria-label={clip.label}
+      onEnded={(event) => {
+        const video = event.currentTarget;
+        video.currentTime = 0;
+        video.play().catch(() => {});
+      }}
     />
   );
 }
@@ -106,9 +112,12 @@ export function Programs() {
           if (!video.src && video.dataset.src) video.src = video.dataset.src;
           video.play().catch(() => {});
         }
-        else video.pause();
+        else {
+          video.pause();
+          if (video.readyState > 0) video.currentTime = 0;
+        }
       }),
-      { threshold: 0.15 },
+      { threshold: 0 },
     );
     videos.forEach((video) => io.observe(video));
 
