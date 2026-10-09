@@ -7,7 +7,16 @@ import { CarouselControls } from './CarouselControls';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const cards = [
+type ProgramCard = {
+  title: string;
+  text: string;
+  intro: string;
+  points: string[];
+  format: string;
+  premium?: boolean;
+};
+
+const cards: ProgramCard[] = [
   {
     title: 'Single Session',
     text: '₹3,000 · 90 minutes · 1:1 online',
@@ -33,7 +42,8 @@ const cards = [
   },
   {
     title: 'Private Yoga',
-    text: '₹12,000/month · 12 sessions · 1:1 online',
+    text: '12 sessions · 1:1 online',
+    premium: true,
     intro: 'We build a practice around your body, your health and your pace. Clients often arrive wanting to change their shape. Most stay because they start to trust and enjoy their body again.',
     points: [
       'Twelve private online sessions a month',
@@ -72,10 +82,11 @@ function Clip({ clip }: { clip: typeof clips[number] }) {
   );
 }
 
-function Card({ card, index }: { card: typeof cards[number]; index: number }) {
+function Card({ card, index }: { card: ProgramCard; index: number }) {
   return (
     <article aria-expanded={false}>
       <div className="program-panel">
+        {card.premium && <span className="badge program-premium">PREMIUM</span>}
         <h3>{card.title}</h3>
         <p>{card.text}</p>
         <button className="program-more" type="button" aria-expanded={false} aria-controls={`program-details-${index + 1}`}>
@@ -156,7 +167,7 @@ export function Programs() {
         const fromBottom = rows[i];
         const at = i * 0.35;
         tl.fromTo(panel, { clipPath: fromBottom ? 'inset(100% 0 0 0)' : 'inset(0 0 100% 0)' }, { clipPath: 'inset(0% 0 0% 0)' }, at)
-          .fromTo(panel.querySelectorAll(':scope > h3, :scope > p, :scope > .program-more'), { y: fromBottom ? -28 : 28, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.08 }, at + 0.25);
+          .fromTo(panel.querySelectorAll(':scope > .program-premium, :scope > h3, :scope > p, :scope > .program-more'), { y: fromBottom ? -28 : 28, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.08 }, at + 0.25);
       });
       tl.fromTo(videos, { scale: 1.08, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, stagger: 0.25 }, 0.15);
 
