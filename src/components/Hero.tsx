@@ -8,7 +8,8 @@ import { smoothScroll } from '../animations/smoothScroll';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const HeroScene = lazy(() => import('./HeroScene').then(({ HeroScene }) => ({ default: HeroScene })));
+const loadHeroScene = () => import('./HeroScene');
+const HeroScene = lazy(() => loadHeroScene().then(({ HeroScene }) => ({ default: HeroScene })));
 
 export function Hero() {
   const [showScene, setShowScene] = useState(false);
@@ -19,18 +20,24 @@ export function Hero() {
   const feelings = ['Constant Stress', 'Relationship Issues', 'Self Doubt', 'Emotional Burnout', 'Feeling Overwhelmed'];
 
   useEffect(() => {
-    // The CSS gradient is the complete mobile and reduced-motion experience.
-    // Only add the costly WebGL texture on larger screens after the page settles.
+    // Start loading the WebGL scene behind the opening curtain, rather than
+    // waiting until the visitor can already see the hero.
     const media = window.matchMedia('(min-width: 1025px) and (prefers-reduced-motion: no-preference)');
-    let timer = 0;
+    let cancelled = false;
     const update = () => {
-      window.clearTimeout(timer);
-      if (media.matches) timer = window.setTimeout(() => setShowScene(true), 6000);
-      else setShowScene(false);
+      if (!media.matches) {
+        setShowScene(false);
+        return;
+      }
+      void loadHeroScene().then(() => {
+        if (!cancelled && media.matches) setShowScene(true);
+      }).catch(() => {
+        // The gradient remains visible if WebGL cannot be loaded.
+      });
     };
     media.addEventListener('change', update);
     update();
-    return () => { window.clearTimeout(timer); media.removeEventListener('change', update); };
+    return () => { cancelled = true; media.removeEventListener('change', update); };
   }, []);
 
   // The choices stay folded under the question until the visitor scrolls a little

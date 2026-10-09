@@ -1,6 +1,6 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Color, type Mesh, type ShaderMaterial } from 'three';
-import { forwardRef, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import { forwardRef, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
 const toRgb = (hex: string): [number, number, number] => {
   const value = hex.replace('#', '');
@@ -20,7 +20,7 @@ const Plane = forwardRef<Mesh, { uniforms: Uniforms }>(function Plane({ uniforms
 
 export function HeroScene() {
   const mesh = useRef<Mesh>(null);
+  const [ready, setReady] = useState(false);
   const uniforms = useMemo<Uniforms>(() => ({ uTime: { value: 0 }, uColor: { value: new Color(...toRgb('#e0b25a')) }, uSpeed: { value: 5 }, uScale: { value: 1.1 }, uRotation: { value: .05 }, uNoiseIntensity: { value: 1.5 } }), []);
-  useEffect(() => undefined, []);
-  return <div id="hero-canvas" aria-hidden="true"><Canvas dpr={[1, 2]} gl={{ alpha: false, antialias: true }}><Plane ref={mesh} uniforms={uniforms} /></Canvas></div>;
+  return <div id="hero-canvas" className={ready ? 'is-ready' : undefined} aria-hidden="true"><Canvas dpr={[1, 1.5]} gl={{ alpha: false, antialias: false, powerPreference: 'high-performance' }} onCreated={() => setReady(true)}><Plane ref={mesh} uniforms={uniforms} /></Canvas></div>;
 }

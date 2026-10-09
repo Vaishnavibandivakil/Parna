@@ -349,7 +349,8 @@ body{max-width:none}
 .menu-tab img{width:22px;height:22px}
 .hero nav{position:absolute;right:4%;top:88px;z-index:5}
 .hero-panel{position:absolute;left:3.2%;top:0;bottom:4%;width:40%;z-index:2;isolation:isolate;overflow:hidden;border-radius:0 0 8px 8px;padding:40px 48px 44px;display:flex;flex-direction:column;justify-content:space-between;color:#fff;background:linear-gradient(159.1deg,#573700 30.97%,#aa7100 46.52%,#975d00 49.43%,#5f3b00 68.62%);box-shadow:0 40px 80px rgba(28,19,16,.35);will-change:transform}
-.hero-panel #hero-canvas{position:absolute;inset:0;z-index:0;mix-blend-mode:soft-light;opacity:.9;pointer-events:none}
+.hero-panel #hero-canvas{position:absolute;inset:0;z-index:0;mix-blend-mode:soft-light;opacity:0;pointer-events:none;transition:opacity .45s ease}
+.hero-panel #hero-canvas.is-ready{opacity:.9}
 .hero-panel .brand{position:relative;z-index:1;font-size:52px;letter-spacing:-3.2px;line-height:1;margin-top:8px}
 .hero-panel .hero-copy{position:relative;left:auto;top:auto;width:auto;max-width:640px;z-index:1}
 .hero-copy::before{content:none}
