@@ -73,10 +73,14 @@ function Clip({ clip }: { clip: typeof clips[number] }) {
 
 function Card({ card, index }: { card: typeof cards[number]; index: number }) {
   return (
-    <article tabIndex={0} aria-expanded={false}>
+    <article aria-expanded={false}>
       <div className="program-panel">
         <h3>{card.title}</h3>
         <p>{card.text}</p>
+        <button className="program-more" type="button" aria-expanded={false} aria-controls={`program-details-${index + 1}`}>
+          <span className="more-label">Know more</span><span className="less-label">Show less</span>
+          <span className="program-more-arrow" aria-hidden>→</span>
+        </button>
         <div className="program-details" id={`program-details-${index + 1}`}>
           <div className="program-details-inner">
             <p className="program-intro">{card.intro}</p>
@@ -150,7 +154,7 @@ export function Programs() {
         const fromBottom = rows[i];
         const at = i * 0.35;
         tl.fromTo(panel, { clipPath: fromBottom ? 'inset(100% 0 0 0)' : 'inset(0 0 100% 0)' }, { clipPath: 'inset(0% 0 0% 0)' }, at)
-          .fromTo(panel.querySelectorAll(':scope > h3, :scope > p'), { y: fromBottom ? -28 : 28, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.08 }, at + 0.25);
+          .fromTo(panel.querySelectorAll(':scope > h3, :scope > p, :scope > .program-more'), { y: fromBottom ? -28 : 28, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.08 }, at + 0.25);
       });
       tl.fromTo(videos, { scale: 1.08, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, stagger: 0.25 }, 0.15);
 
@@ -160,13 +164,12 @@ export function Programs() {
       };
     });
 
-    // 2) Hover / focus / tap: the panel extends over the neighbouring tile,
-    //    downward for the top row and upward for the bottom row. The title and
-    //    summary stay exactly where they are; the details settle in beside them.
-    const canHover = () => window.matchMedia('(hover: hover)').matches;
+    // 2) The button expands the details in place on phones and over the
+    //    neighbouring tile on desktop.
     const tiles = Array.from(el.children) as HTMLElement[];
     boxes.forEach((box, i) => {
       const panel = box.querySelector<HTMLElement>('.program-panel')!;
+      const more = panel.querySelector<HTMLButtonElement>('.program-more')!;
       const details = panel.querySelector<HTMLElement>('.program-details')!;
       const items = Array.from(details.querySelector('.program-details-inner')!.children);
       const isDesktop = () => getComputedStyle(el).gridTemplateColumns.split(' ').length >= 3;
@@ -216,10 +219,11 @@ export function Programs() {
          clip mask (no per-frame layout), which keeps the text crisp and smooth. */
       const reveal = gsap.timeline({
         paused: true,
-        onStart: () => { box.style.zIndex = '5'; box.setAttribute('aria-expanded', 'true'); panel.classList.add('is-open'); },
+        onStart: () => { box.style.zIndex = '5'; box.setAttribute('aria-expanded', 'true'); more.setAttribute('aria-expanded', 'true'); panel.classList.add('is-open'); },
         onReverseComplete: () => {
           box.style.zIndex = '';
           box.setAttribute('aria-expanded', 'false');
+          more.setAttribute('aria-expanded', 'false');
           panel.classList.remove('is-open');
           panel.style.height = '';
           panel.style.clipPath = '';
@@ -234,8 +238,8 @@ export function Programs() {
       /* Phones: the panel sits inline, so it simply grows to fit its details. */
       const expand = gsap.timeline({
         paused: true,
-        onStart: () => { box.setAttribute('aria-expanded', 'true'); panel.classList.add('is-open'); },
-        onReverseComplete: () => { box.setAttribute('aria-expanded', 'false'); panel.classList.remove('is-open'); },
+        onStart: () => { box.setAttribute('aria-expanded', 'true'); more.setAttribute('aria-expanded', 'true'); panel.classList.add('is-open'); },
+        onReverseComplete: () => { box.setAttribute('aria-expanded', 'false'); more.setAttribute('aria-expanded', 'false'); panel.classList.remove('is-open'); },
       });
       expand
         .to(details, { height: 'auto', duration: 0.5, ease: 'power2.inOut' }, 0)
@@ -263,23 +267,13 @@ export function Programs() {
       const hide = () => active?.reverse();
       const toggle = () => (!active || active.reversed() || active.progress() === 0 ? show() : hide());
 
-      // Decide per event, so hybrid devices and viewport changes behave.
-      const onEnter = () => { if (canHover()) show(); };
-      const onLeave = () => { if (canHover()) hide(); };
-      const onTap = () => { if (!canHover()) toggle(); };
-      box.addEventListener('mouseenter', onEnter);
-      box.addEventListener('mouseleave', onLeave);
-      box.addEventListener('click', onTap);
-      box.addEventListener('focus', show);
-      box.addEventListener('blur', hide);
-      box.addEventListener('keydown', (e) => { if (e.key === 'Escape') hide(); });
+      const onKeyDown = (event: KeyboardEvent) => { if (event.key === 'Escape') hide(); };
+      more.addEventListener('click', toggle);
+      more.addEventListener('keydown', onKeyDown);
 
       cleanups.push(() => {
-        box.removeEventListener('mouseenter', onEnter);
-        box.removeEventListener('mouseleave', onLeave);
-        box.removeEventListener('click', onTap);
-        box.removeEventListener('focus', show);
-        box.removeEventListener('blur', hide);
+        more.removeEventListener('click', toggle);
+        more.removeEventListener('keydown', onKeyDown);
         reveal.kill();
         expand.kill();
         panel.classList.remove('is-open');
