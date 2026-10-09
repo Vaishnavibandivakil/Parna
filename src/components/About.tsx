@@ -1,14 +1,16 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { asset } from '../assets';
 
-// Keep all three new portraits in the first five so the compact arc shows them too.
+// Alternate the newer portraits with the other shoots. The repeated white
+// portrait sits halfway around the ten-card arc instead of beside itself.
 const photos = [
-  'about-6.webp',
   'arc-img_7578.webp',
-  'about-2-480.webp',
+  'about-6.webp',
   'arc-img_7588.webp',
+  'about-2-480.webp',
   'arc-img_7610.webp',
   'about-7.webp',
+  'about-6.webp',
   'about-8.webp',
   'about-4-480.webp',
   'about-9.webp',
@@ -111,7 +113,7 @@ function ArcGallery() {
     const angle = degrees * Math.PI / 180;
     return { left: `${Math.cos(angle) * tickRadius}px`, top: `${Math.sin(angle) * tickRadius + (tickCenterY - TICK_ARC_TOP)}px`, transform: `rotate(${degrees - 180}deg)` };
   };
-  return <><div className="photo-arc" ref={container} aria-hidden="true">{Array.from({ length: 10 }, (_, index) => <img key={index} ref={node => { cards.current[index] = node; }} src={asset(photos[index % photos.length])} loading="lazy" decoding="async" className="carousel-card" style={{ '--card-width': `${[180,190,200,206,200,190,180][index % 7]}px`, '--card-height': `${[210,220,230,240,230,220,210][index % 7]}px` } as CSSProperties} alt="" />)}</div><div className="tick-arc" aria-hidden="true">{tickList.map((_, index) => <img key={index} className="tick" src={asset('f2be9.svg')} style={tickStyle(index)} alt="" />)}</div></>;
+  return <><div className="photo-arc" ref={container} aria-hidden="true">{photos.map((photo, index) => <img key={index} ref={node => { cards.current[index] = node; }} src={asset(photo)} loading="lazy" decoding="async" className="carousel-card" style={{ '--card-width': `${[180,190,200,206,200,190,180][index % 7]}px`, '--card-height': `${[210,220,230,240,230,220,210][index % 7]}px` } as CSSProperties} alt="" />)}</div><div className="tick-arc" aria-hidden="true">{tickList.map((_, index) => <img key={index} className="tick" src={asset('f2be9.svg')} style={tickStyle(index)} alt="" />)}</div></>;
 }
 
 export function About() {
