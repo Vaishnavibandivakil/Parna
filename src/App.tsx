@@ -36,10 +36,18 @@ export default function App() {
     if (!el) return;
     let cleanup: (() => void) | undefined;
     let cancelled = false;
-    const start = () => { if (!cancelled) cleanup = initReveals(el); };
+    const size = window.matchMedia('(max-width: 1024px)');
+    const start = () => {
+      if (cancelled) return;
+      cleanup?.();
+      cleanup = initReveals(el);
+    };
     // Below-the-fold line splits need font metrics; the hero remains visible while fonts load.
-    Promise.race([document.fonts?.ready ?? Promise.resolve(), new Promise((r) => setTimeout(r, 1500))]).then(start);
-    return () => { cancelled = true; cleanup?.(); };
+    Promise.race([document.fonts?.ready ?? Promise.resolve(), new Promise((r) => setTimeout(r, 1500))]).then(() => {
+      start();
+      if (!cancelled) size.addEventListener('change', start);
+    });
+    return () => { cancelled = true; size.removeEventListener('change', start); cleanup?.(); };
   }, []);
 
   return (

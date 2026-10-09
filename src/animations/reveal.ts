@@ -51,9 +51,8 @@ export function initReveals(root: HTMLElement) {
   const q = (sel: string) => root.querySelector<HTMLElement>(sel);
   const qa = (sel: string) => Array.from(root.querySelectorAll<HTMLElement>(sel));
 
-  // Touch scrolling can pass through several sections before staggered fades
-  // finish; keep all text fully readable on phones and tablets.
-  if (reduce || window.matchMedia('(pointer: coarse) and (max-width: 1024px)').matches) {
+  // Keep text readable while touch devices scroll or foldable screens resize.
+  if (reduce || window.matchMedia('(max-width: 1024px)').matches) {
     return () => {};
   }
 

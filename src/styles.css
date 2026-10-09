@@ -546,3 +546,47 @@ html.lenis{scroll-behavior:auto!important}
   .footer-social{flex-wrap:wrap;gap:10px;font-size:14px}
   .copyright{padding-top:20px;font-size:12px;line-height:1.5;color:rgba(234,223,215,.72)}
 }
+
+/* Tablet and fold layouts use swipe cards, so their sections must follow the
+   cards' actual height instead of reserving the desktop grid's empty space. */
+@media(min-width:801px) and (max-width:1024px){
+  .about{height:auto;min-height:0;padding-bottom:80px}
+  .about-copy{width:min(780px,calc(100% - 48px))}
+  .about-copy h2{width:auto;max-width:700px;font-size:clamp(42px,5.4vw,56px)}
+  .about-copy>p{width:auto;max-width:600px}
+  .metrics{width:min(1000px,calc(100% - 48px))}
+  .how,.services,.programs{height:auto;min-height:0;padding-bottom:80px}
+  .section-heading{height:auto;margin-bottom:36px}
+  .programs-heading{margin-bottom:36px}
+  .program-link{position:static;justify-content:flex-end;margin-top:24px}
+}
+@media(min-width:601px) and (max-width:1024px){
+  .hero,.hero-panel{min-height:min(100svh,960px)}
+  .journey-grid article{flex-basis:min(74vw,560px)}
+  .program-grid>*{flex-basis:min(74vw,560px)}
+  .story-deck .story-card{flex-basis:min(84vw,700px)}
+  footer{min-height:0;padding-top:72px;padding-bottom:48px}
+  .footer-simple{margin:44px 0 30px}
+}
+@media(max-width:360px){
+  .hero-panel{padding:20px 16px 24px}
+  .hero-panel .hero-copy{margin-top:clamp(40px,10vh,76px)}
+  .hero-panel h1,.hero-panel h1 em{font-size:clamp(29px,10vw,34px);line-height:1.14}
+  .hero-panel .hero-copy>p:not(.hero-eyebrow){font-size:14px}
+  .hero-cta{padding:14px 18px;min-height:52px}
+  .hero-panel .feelings{margin-top:18px;padding:16px}
+  .feeling-list button{white-space:normal;text-align:left}
+  .newsletter-email{font-size:13px}
+  .footer-social{gap:8px}
+}
+@media(max-height:600px) and (max-width:1024px){
+  dialog.program-dialog{grid-template-columns:1fr;grid-template-rows:100px auto;width:min(680px,calc(100% - 16px));max-height:calc(100dvh - 24px);overflow:auto;align-content:start}
+  .pd-photo{height:100px}
+  .pd-photo figcaption{bottom:12px;gap:3px}
+  .pd-photo figcaption p{font-size:20px}
+  .pd-content{padding:12px 18px 16px}
+  .pd-copy{gap:7px;padding-bottom:12px}
+  .pd-includes{gap:5px}
+  .pd-foot{padding-top:10px;gap:8px}
+  .pd-foot>p{font-size:17px}
+}
