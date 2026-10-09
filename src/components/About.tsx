@@ -4,19 +4,25 @@ import { asset } from '../assets';
 const photos = ['about-6.webp', 'about-2-480.webp', 'about-7.webp', 'about-8.webp', 'about-4-480.webp', 'about-9.webp'];
 const ticks = Array.from({ length: 100 });
 
-type ArcMode = 'compact' | 'tablet' | 'normal' | 'wide';
+type ArcMode = 'compact' | 'landscape' | 'tablet' | 'normal' | 'wide';
 
 /** Arc geometry per screen size. "normal" is the original design; "wide" opens the
  *  semicircle up for very wide screens, with the dotted guide on the same circle. */
 const ARC = {
   compact: { radius: 335, centerY: 430, cards: 7, cardScale: 0.7, tickRadius: 254, tickCenterY: 430, tickStart: 190, tickSpan: 160, tickCount: 64 },
+  landscape: { radius: 430, centerY: 510, cards: 8, cardScale: 0.7, tickRadius: 370, tickCenterY: 510, tickStart: 190, tickSpan: 160, tickCount: 72 },
   tablet: { radius: 560, centerY: 700, cards: 9, cardScale: 0.88, tickRadius: 458, tickCenterY: 700, tickStart: 190, tickSpan: 160, tickCount: 88 },
   normal: { radius: 945, centerY: 1161, cards: 10, cardScale: 1, tickRadius: 790, tickCenterY: 1161, tickStart: 202.5, tickSpan: 148.5, tickCount: 100 },
   wide: { radius: 800, centerY: 1000, cards: 10, cardScale: 1, tickRadius: 660, tickCenterY: 1000, tickStart: 190, tickSpan: 160, tickCount: 100 },
 };
 const TICK_ARC_TOP = 421; // matches .tick-arc{top} in styles.css
 
-const modeFor = () => (window.matchMedia('(max-width: 800px)').matches ? 'compact' : window.matchMedia('(max-width: 1024px)').matches ? 'tablet' : window.matchMedia('(min-width: 1700px)').matches ? 'wide' : 'normal') as ArcMode;
+const modeFor = (): ArcMode => {
+  if (window.matchMedia('(max-width: 800px)').matches) return 'compact';
+  if (window.matchMedia('(max-width: 1024px) and (max-height: 600px) and (orientation: landscape)').matches) return 'landscape';
+  if (window.matchMedia('(max-width: 1024px)').matches) return 'tablet';
+  return window.matchMedia('(min-width: 1700px)').matches ? 'wide' : 'normal';
+};
 
 function ArcGallery() {
   const container = useRef<HTMLDivElement>(null);
