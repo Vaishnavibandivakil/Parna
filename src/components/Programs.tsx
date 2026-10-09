@@ -30,7 +30,8 @@ const cards: ProgramCard[] = [
   },
   {
     title: 'Transformation & Heart Activation Programme',
-    text: '₹35,000–₹50,000 · 7 sessions × 90 minutes · 1:1 online',
+    text: '7 sessions × 90 minutes · 1:1 online',
+    premium: true,
     intro: 'Over seven sessions we move through all four stages of the C.A.R.E. method, at a pace that suits you. We look at your patterns and beliefs, work through what’s been held in, and build practices that fit your life.',
     points: [
       'Seven 90-minute private sessions',
@@ -42,8 +43,7 @@ const cards: ProgramCard[] = [
   },
   {
     title: 'Private Yoga',
-    text: '12 sessions · 1:1 online',
-    premium: true,
+    text: '₹12,000/month · 12 sessions · 1:1 online',
     intro: 'We build a practice around your body, your health and your pace. Clients often arrive wanting to change their shape. Most stay because they start to trust and enjoy their body again.',
     points: [
       'Twelve private online sessions a month',
@@ -86,7 +86,7 @@ function Card({ card, index }: { card: ProgramCard; index: number }) {
   return (
     <article aria-expanded={false}>
       <div className="program-panel">
-        {card.premium && <span className="badge program-premium">PREMIUM</span>}
+        {card.premium && <span className="program-premium">PREMIUM</span>}
         <h3>{card.title}</h3>
         <p>{card.text}</p>
         <button className="program-more" type="button" aria-expanded={false} aria-controls={`program-details-${index + 1}`}>
