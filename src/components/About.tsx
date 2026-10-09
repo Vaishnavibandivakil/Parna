@@ -1,7 +1,18 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { asset } from '../assets';
 
-const photos = ['about-6.webp', 'about-2-480.webp', 'about-7.webp', 'about-8.webp', 'about-4-480.webp', 'about-9.webp'];
+// Keep all three new portraits in the first five so the compact arc shows them too.
+const photos = [
+  'about-6.webp',
+  'arc-img_7578.webp',
+  'about-2-480.webp',
+  'arc-img_7588.webp',
+  'arc-img_7610.webp',
+  'about-7.webp',
+  'about-8.webp',
+  'about-4-480.webp',
+  'about-9.webp',
+];
 const ticks = Array.from({ length: 100 });
 
 type ArcMode = 'compact' | 'band' | 'tablet' | 'normal' | 'wide';
