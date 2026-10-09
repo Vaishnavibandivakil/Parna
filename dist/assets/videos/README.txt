@@ -1,8 +1,9 @@
-Drop the three program clips here (short, muted, looping, H.264 MP4 recommended, ~1280x800):
+Clips in the Sessions and programmes grid, in display order:
 
-  program-1.mp4   -> shown next to "Depression & Anxiety"   (poster: 1360c.png)
-  program-2.mp4   -> shown next to "PTSD & Trauma Recovery"  (poster: 79171.png)
-  program-3.mp4   -> shown next to "Grief & Relationship Issues" (poster: 60969.png)
+  parna-7658.mp4  -> Single Session
+  parna-7667.mp4  -> Transformation & Heart Activation Programme
+  parna-7685.mp4  -> Private Yoga
 
-Optional WebM twins (program-1.webm, ...) are picked up automatically for smaller files.
-Until a clip exists, the poster image is shown in its place.
+Each clip has a matching .webp poster used before the video loads.
+The source clips are IMG_7658.mov, IMG_7667.mov, and IMG_7685.mov.
+The published MP4s are muted H.264, 1280x720, and optimized for progressive loading.
