@@ -459,6 +459,10 @@ html.lenis,html.lenis body{height:auto}
 .preloader{position:fixed;inset:0;z-index:200;background:#3a2408;display:grid;place-items:center;will-change:transform}
 .preloader-logo{width:clamp(220px,28vw,360px);height:auto;opacity:0;filter:drop-shadow(0 10px 30px rgba(0,0,0,.35))}
 
+/* Hero photo: keep Parna in frame right of the panel */
+.hero-bg{object-position:72% 45%}
+@media(max-width:1024px){.hero-bg{object-position:70% 35%}}
+
 /* Transformation glow */
 .transformation{background:radial-gradient(ellipse 430px 300px at 50% 52%,rgba(201,126,27,.72) 0%,rgba(137,76,9,.48) 42%,rgba(87,43,0,0) 76%),linear-gradient(180deg,#603000 0%,#522700 100%)}
 .transformation .where{font:italic 24px/1 'Instrument Serif',serif;color:#fff0e0}

@@ -61,7 +61,7 @@ export function Hero() {
     setDialog({ open: true, index: feelingToProgram[feelings[index]] ?? 0 });
   };
   return <section className="hero" id="home">
-    <img className="hero-bg" src={asset('hero-bg-optimized.webp')} fetchPriority="high" alt="" />
+    <img className="hero-bg" src={asset('hero-bg.jpg')} fetchPriority="high" alt="" />
     <div className="hero-panel">
       {showScene && <Suspense fallback={null}><HeroScene /></Suspense>}
       <a className="brand brand-logo" href="#home"><img src={asset('logo-mark.png')} alt="Parna Presence" /></a>
