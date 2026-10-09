@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef, useState, type KeyboardEvent } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Draggable } from 'gsap/Draggable';
+import { whatsappUrl } from '../contact';
 
 gsap.registerPlugin(ScrollTrigger, Draggable);
 
@@ -78,14 +79,13 @@ export type TransformationProps = {
    * "scroll" – the section pins and the sweep is scrubbed by scroll position.
    */
   mode?: 'drag' | 'scroll';
-  onCtaClick?: () => void;
   className?: string;
 };
 
 const SANS = "font-['Instrument_Sans']";
 const SERIF = "font-['Instrument_Serif']";
 
-export function Transformation({ mode = 'drag', onCtaClick, className = '' }: TransformationProps) {
+export function Transformation({ mode = 'drag', className = '' }: TransformationProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const fitRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -453,10 +453,11 @@ export function Transformation({ mode = 'drag', onCtaClick, className = '' }: Tr
       )}
 
       {/* CTA */}
-      <button
+      <a
         data-reveal
-        type="button"
-        onClick={onCtaClick}
+        href={whatsappUrl}
+        target="_blank"
+        rel="noopener noreferrer"
         className="group pl-8 pr-3 py-3 border-0 bg-orange-50 rounded-[100px] inline-flex items-center gap-6 cursor-pointer"
       >
         <span className={`text-orange-950 text-base font-semibold ${SANS}`}>Join Parna Today</span>
@@ -465,7 +466,7 @@ export function Transformation({ mode = 'drag', onCtaClick, className = '' }: Tr
             <path d="M3 8h10M9 4l4 4-4 4" />
           </svg>
         </span>
-      </button>
+      </a>
     </section>
   );
 }
