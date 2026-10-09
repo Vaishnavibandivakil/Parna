@@ -16,7 +16,7 @@ export function Hero() {
   const [choicesOpen, setChoicesOpen] = useState(false);
   const [dialog, setDialog] = useState<{ open: boolean; index: number }>({ open: false, index: 0 });
   const choices = useRef<HTMLDivElement>(null);
-  const feelings = ['Constant Stress', 'Trouble Sleeping', 'Self Doubt', 'Emotional Burnout', 'Feeling Overwhelmed'];
+  const feelings = ['Constant Stress', 'Relationship Issues', 'Self Doubt', 'Emotional Burnout', 'Feeling Overwhelmed'];
 
   useEffect(() => {
     // The CSS gradient is the complete mobile and reduced-motion experience.

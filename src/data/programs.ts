@@ -11,7 +11,7 @@ export const programs = [
 /** Which program the hero's "How are you feeling today?" choices lead to. */
 export const feelingToProgram: Record<string, number> = {
   'Constant Stress': 1,
-  'Trouble Sleeping': 1,
+  'Relationship Issues': 2,
   'Self Doubt': 5,
   'Emotional Burnout': 0,
   'Feeling Overwhelmed': 4,
