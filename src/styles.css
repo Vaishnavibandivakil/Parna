@@ -450,10 +450,10 @@ html.lenis,html.lenis body{height:auto}
 
 /* Logo lockup */
 .brand-logo{display:inline-block;line-height:0;font-size:0;letter-spacing:0}
-.hero-panel .brand-logo{margin:-18px 0 0 -14px}
-.hero-panel .brand-logo img{width:190px;height:auto;filter:drop-shadow(0 6px 14px rgba(0,0,0,.25))}
+.hero-panel .brand-logo{margin:-6px 0 0 -4px}
+.hero-panel .brand-logo img{width:auto;height:96px;filter:drop-shadow(0 6px 14px rgba(0,0,0,.25))}
 .footer-brand .brand-logo img{width:170px;height:auto;margin-left:-10px}
-@media(max-width:1024px){.hero-panel .brand-logo img{width:150px}}
+@media(max-width:1024px){.hero-panel .brand-logo img{height:72px;width:auto}}
 
 /* Preloader curtain */
 .preloader{position:fixed;inset:0;z-index:200;background:#3a2408;display:grid;place-items:center;will-change:transform}
