@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { asset } from '../assets';
 import { useCompact } from '../hooks/useCompact';
+import { CarouselControls } from './CarouselControls';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -99,5 +100,5 @@ export function Stories() {
 
     return () => mm.revert();
   }, []);
-  return <section className="stories section" id="stories"><div className="stories-stack-heading"><span className="badge section-badge">CLIENT STORIES</span><h2>Real stories of growth, healing<br /> and lasting change</h2></div><div className="story-deck" ref={deck}><div className="story-stack-pin" ref={pin}>{stories.map((story, index) => <StoryCard key={story.label} story={story} index={index} cardRef={node => { cards.current[index] = node; }} />)}</div></div></section>;
+  return <section className="stories section" id="stories"><div className="stories-stack-heading"><span className="badge section-badge">CLIENT STORIES</span><h2>Real stories of growth, healing<br /> and lasting change</h2></div><CarouselControls target={pin} label="client stories" /><div className="story-deck" ref={deck}><div className="story-stack-pin" ref={pin}>{stories.map((story, index) => <StoryCard key={story.label} story={story} index={index} cardRef={node => { cards.current[index] = node; }} />)}</div></div></section>;
 }

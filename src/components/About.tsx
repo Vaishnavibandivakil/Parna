@@ -10,7 +10,7 @@ type ArcMode = 'compact' | 'band' | 'tablet' | 'normal' | 'wide';
  *  semicircle up for very wide screens, with the dotted guide on the same circle. */
 const ARC = {
   compact: { radius: 335, centerY: 430, cards: 7, cardScale: 0.7, tickRadius: 254, tickCenterY: 430, tickStart: 190, tickSpan: 160, tickCount: 64 },
-  band: { radius: 0, centerY: 0, cards: 5, cardScale: 0.58, tickRadius: 0, tickCenterY: 0, tickStart: 190, tickSpan: 160, tickCount: 0 },
+  band: { radius: 0, centerY: 0, cards: 5, cardScale: 0.58, tickRadius: 0, tickCenterY: 0, tickStart: 190, tickSpan: 160, tickCount: 65 },
   tablet: { radius: 560, centerY: 700, cards: 9, cardScale: 0.88, tickRadius: 458, tickCenterY: 700, tickStart: 190, tickSpan: 160, tickCount: 88 },
   normal: { radius: 945, centerY: 1161, cards: 10, cardScale: 1, tickRadius: 790, tickCenterY: 1161, tickStart: 202.5, tickSpan: 148.5, tickCount: 100 },
   wide: { radius: 800, centerY: 1000, cards: 10, cardScale: 1, tickRadius: 660, tickCenterY: 1000, tickStart: 190, tickSpan: 160, tickCount: 100 },
@@ -49,7 +49,7 @@ function ArcGallery() {
       const { radius, centerY, cardScale, cards: count } = ARC[mode];
       // Read layout once, before changing any card styles in this frame.
       const centerX = target.clientWidth / 2;
-      const progress = reduce || mode === 'band' ? 0 : (now - started) / 34000;
+      const progress = reduce ? 0 : (now - started) / 34000;
       cards.current.forEach((card, index) => {
         if (!card) return;
         // Fewer photos on small screens: hide the extras and space the rest evenly.
@@ -57,12 +57,14 @@ function ArcGallery() {
         card.style.display = hidden ? 'none' : '';
         if (hidden) return;
         if (mode === 'band') {
-          const spread = Math.min(target.clientWidth * 0.35, 340);
+          const phase = (index / count + 0.1 + progress) % 1;
+          const arcPosition = phase * 2 - 1;
+          const travel = Math.min(target.clientWidth * 0.42, 420);
           const scale = Math.min(cardScale, target.clientWidth / 1500);
-          card.style.left = `${centerX + (index - 2) * spread / 2}px`;
-          card.style.top = `${[140, 94, 76, 94, 140][index]}px`;
-          card.style.transform = `translate(-50%, -50%) rotate(${[-14, -7, 0, 7, 14][index]}deg) scale(${scale})`;
-          card.style.opacity = '';
+          card.style.left = `${centerX + arcPosition * travel}px`;
+          card.style.top = `${80 + 60 * arcPosition * arcPosition}px`;
+          card.style.transform = `translate(-50%, -50%) rotate(${arcPosition * 15}deg) scale(${scale})`;
+          card.style.opacity = String(Math.min(1, (1 - Math.abs(arcPosition)) * 5));
           return;
         }
         const phase = (index / count + progress) % 1;
@@ -74,12 +76,12 @@ function ArcGallery() {
         // On wide screens the ends are on screen, so photos fade in and out there.
         card.style.opacity = mode === 'wide' ? String(Math.min(1, Math.sin(phase * Math.PI) * 2.2)) : '';
       });
-      if (!reduce && visible && mode !== 'band') frame = requestAnimationFrame(position);
+      if (!reduce && visible) frame = requestAnimationFrame(position);
     };
     position(started);
     const observer = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
-      if (visible && !reduce && mode !== 'band' && !frame) frame = requestAnimationFrame(position);
+      if (visible && !reduce && !frame) frame = requestAnimationFrame(position);
       if (!visible && frame) { cancelAnimationFrame(frame); frame = 0; }
     }, { rootMargin: '200px 0px' });
     if (container.current) observer.observe(container.current);
@@ -88,7 +90,17 @@ function ArcGallery() {
 
   const { tickRadius, tickCenterY, tickStart, tickSpan, tickCount } = ARC[mode];
   const tickList = ticks.slice(0, tickCount);
-  return <><div className="photo-arc" ref={container} aria-hidden="true">{Array.from({ length: 10 }, (_, index) => <img key={index} ref={node => { cards.current[index] = node; }} src={asset(photos[index % photos.length])} loading="lazy" decoding="async" className="carousel-card" style={{ '--card-width': `${[180,190,200,206,200,190,180][index % 7]}px`, '--card-height': `${[210,220,230,240,230,220,210][index % 7]}px` } as CSSProperties} alt="" />)}</div><div className="tick-arc" aria-hidden="true">{tickList.map((_, index) => { const degrees = tickStart + index * (tickSpan / (tickList.length - 1)); const angle = degrees * Math.PI / 180; return <img key={index} className="tick" src={asset('f2be9.svg')} style={{ left: `${Math.cos(angle) * tickRadius}px`, top: `${Math.sin(angle) * tickRadius + (tickCenterY - TICK_ARC_TOP)}px`, transform: `rotate(${degrees - 180}deg)` }} alt="" />; })}</div></>;
+  const tickStyle = (index: number): CSSProperties => {
+    if (mode === 'band') {
+      const fraction = index / (tickList.length - 1);
+      const x = fraction * 2 - 1;
+      return { left: `${8 + fraction * 84}%`, top: `${160 + 45 * x * x}px`, transform: `rotate(${x * 10}deg)` };
+    }
+    const degrees = tickStart + index * (tickSpan / (tickList.length - 1));
+    const angle = degrees * Math.PI / 180;
+    return { left: `${Math.cos(angle) * tickRadius}px`, top: `${Math.sin(angle) * tickRadius + (tickCenterY - TICK_ARC_TOP)}px`, transform: `rotate(${degrees - 180}deg)` };
+  };
+  return <><div className="photo-arc" ref={container} aria-hidden="true">{Array.from({ length: 10 }, (_, index) => <img key={index} ref={node => { cards.current[index] = node; }} src={asset(photos[index % photos.length])} loading="lazy" decoding="async" className="carousel-card" style={{ '--card-width': `${[180,190,200,206,200,190,180][index % 7]}px`, '--card-height': `${[210,220,230,240,230,220,210][index % 7]}px` } as CSSProperties} alt="" />)}</div><div className="tick-arc" aria-hidden="true">{tickList.map((_, index) => <img key={index} className="tick" src={asset('f2be9.svg')} style={tickStyle(index)} alt="" />)}</div></>;
 }
 
 export function About() {

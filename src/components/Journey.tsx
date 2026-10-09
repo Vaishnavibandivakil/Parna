@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { asset } from '../assets';
+import { CarouselControls } from './CarouselControls';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -60,6 +61,7 @@ export function Journey() {
         <span className="badge section-badge">HOW PARNA PRESENCE WORKS</span>
         <h2>Your journey to feeling<br />better starts here</h2>
       </div>
+      <CarouselControls target={grid} label="journey steps" />
       <div className="journey-grid" ref={grid}>
         {steps.map((item) => (
           <article className="journey-photo" key={item.step}>

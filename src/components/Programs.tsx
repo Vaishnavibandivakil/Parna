@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { asset } from '../assets';
 import { useCompact } from '../hooks/useCompact';
+import { CarouselControls } from './CarouselControls';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -300,6 +301,7 @@ export function Programs() {
         <span className="badge section-badge">WAYS TO WORK TOGETHER</span>
         <h2>Sessions and programmes</h2>
       </div>
+      <CarouselControls target={grid} label="sessions and programmes" />
       <div className="program-grid" ref={grid}>
         <Card card={cards[0]} index={0} />
         <Clip clip={clips[0]} />
