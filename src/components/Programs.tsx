@@ -44,11 +44,11 @@ const cards = [
   },
 ];
 
-/** Clips live in /public/assets/videos; the poster image shows until a clip exists. */
+/** Show a matching still while each clip loads as it enters the viewport. */
 const clips = [
-  { src: 'program-1', poster: '1360c.png', label: 'A peaceful moment beside the sea' },
-  { src: 'program-2', poster: '79171.png', label: 'Sunlight entering a quiet room' },
-  { src: 'program-3', poster: '60969.png', label: 'A supportive conversation' },
+  { src: 'parna-7658', poster: 'videos/parna-7658.webp', label: 'Parna standing by a leafy balcony' },
+  { src: 'parna-7667', poster: 'videos/parna-7667.webp', label: 'Parna reading on a sofa' },
+  { src: 'parna-7685', poster: 'videos/parna-7685.webp', label: 'Parna looking out from a balcony' },
 ];
 
 function Clip({ clip }: { clip: typeof clips[number] }) {
