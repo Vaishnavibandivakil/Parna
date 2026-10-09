@@ -78,7 +78,7 @@ export function initReveals(root: HTMLElement) {
       { trigger: '.how .section-heading', badge: '.how .section-heading .badge', h2: '.how .section-heading h2' },
       { trigger: '.services-heading', badge: '.services-heading .badge', h2: '.services-heading h2', extra: ['.services-heading > p'] },
       { trigger: '.stories-stack-heading', badge: '.stories-stack-heading .badge', h2: '.stories-stack-heading h2' },
-      { trigger: '.programs', h2: '.programs > h2' },
+      { trigger: '.programs-heading', badge: '.programs-heading .badge', h2: '.programs-heading h2' },
     ];
     headingBlocks.forEach(({ trigger, badge, h2, extra = [] }) => {
       const target = q(trigger);
@@ -86,7 +86,7 @@ export function initReveals(root: HTMLElement) {
       const h2Lines = lines(q(h2), splits);
       const extras = extra.map(q).filter(Boolean) as HTMLElement[];
       const badgeEl = badge ? q(badge) : null;
-      gsap.set([badgeEl, ...extras].filter(Boolean), { autoAlpha: 0 });
+      if (badgeEl || extras.length) gsap.set([badgeEl, ...extras].filter(Boolean), { autoAlpha: 0 });
       gsap.set(h2Lines, { yPercent: 140 });
       onEnter(target, (tl) => {
         if (badgeEl) tl.fromTo(badgeEl, { scale: 0.85, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.8 }, 0);
@@ -110,11 +110,11 @@ export function initReveals(root: HTMLElement) {
     if (newsletter) {
       const h2 = lines(q('.newsletter h2'), splits);
       const cols = qa('.footer-grid > div');
-      gsap.set(['.newsletter form', ...cols].map(x => (typeof x === 'string' ? q(x) : x)).filter(Boolean), { autoAlpha: 0 });
+      gsap.set(['.newsletter-contact', ...cols].map(x => (typeof x === 'string' ? q(x) : x)).filter(Boolean), { autoAlpha: 0 });
       gsap.set(h2, { yPercent: 140 });
       onEnter(newsletter, (tl) => {
         tl.to(h2, { yPercent: 0, duration: 1.2, stagger: 0.1 }, 0)
-          .fromTo('.newsletter form', rise, { ...settled }, 0.3)
+          .fromTo('.newsletter-contact', rise, { ...settled }, 0.3)
           .fromTo(cols, { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.08 }, 0.5);
       }, 'top 85%');
     }
